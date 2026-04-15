@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cladéys — Architecture · Conseil · Cybersécurité</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --royal: #1a2b5e;
+  --royal-deep: #0e1a3d;
+  --royal-mid: #243270;
+  --ivory: #f5f0e8;
+  --ivory-dark: #ede6d6;
+  --ivory-deeper: #d8cdb8;
+  --gold: #b8972a;
+  --gold-light: #d4af37;
+  --gold-pale: #e8d47a;
+  --cardinal: #8b1a2b;
+  --cardinal-light: #a8223a;
+  --white: #ffffff;
+  --text-dark: #1a1a2e;
+  --text-mid: #3d3d5c;
+  --text-muted: #7a7a9a;
+  --border-gold: rgba(184,151,42,0.35);
+  --border-royal: rgba(26,43,94,0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Raleway', sans-serif;
+  background: var(--ivory);
+  color: var(--text-dark);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+.divider-gold {
+  display: flex; align-items: center; gap: 1rem;
+  margin: 1.5rem 0;
+}
+.divider-gold::before,
+.divider-gold::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.divider-gold span {
+  color: var(--gold);
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 6%;
+  background: rgba(14, 26, 61, 0.97);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-gold);
+  animation: fadeDown 0.9s ease both;
+}
+
+.logo-wrap {
+  display: flex; align-items: center; gap: 0.9rem;
+  text-decoration: none;
+}
+
+.logo-mark { width: 38px; height: 38px; flex-shrink: 0; }
+.logo-mark svg { width: 100%; height: 100%; }
+
+.logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--ivory);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.logo-text span { color: var(--gold-light); }
+
+.logo-tagline {
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.4);
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  display: block;
+  margin-top: -0.1rem;
+}
+
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+
+.nav-links a {
+  text-decoration: none;
+  color: rgba(245,240,232,0.6);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: color 0.25s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: -4px; left: 0; right: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+.nav-links a:hover { color: var(--gold-light); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+.nav-cta {
+  padding: 0.55rem 1.4rem;
+  border: 1px solid var(--gold);
+  color: var(--gold) !important;
+  font-size: 0.68rem !important;
+  letter-spacing: 0.18em !important;
+  transition: all 0.3s !important;
+}
+.nav-cta:hover { background: var(--gold) !important; color: var(--royal-deep) !important; }
+.nav-cta::after { display: none !important; }
+
+/* ── HERO ── */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  background: var(--royal-deep);
+  display: flex; align-items: center;
+  overflow: hidden;
+}
+
+.hero-texture {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 70% at 30% 40%, rgba(36,50,112,0.8) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 80% 70%, rgba(139,26,43,0.15) 0%, transparent 60%);
+}
+
+.hero-pattern {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(184,151,42,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184,151,42,0.04) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+.hero-arch {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 35%;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0.07;
+}
+.hero-arch svg { width: 100%; height: 100%; }
+
+.tricolor-bar {
+  position: absolute; top: 0; right: 0;
+  width: 5px; height: 100%;
+  background: linear-gradient(to bottom, #1a2b5e 33.3%, #ffffff 33.3% 66.6%, #8b1a2b 66.6%);
+  opacity: 0.65;
+}
+
+.corner-ornament { position: absolute; width: 70px; height: 70px; }
+.corner-ornament.tl { top: 90px; left: 5%; }
+.corner-ornament.br { bottom: 40px; right: 6%; }
+.corner-ornament svg { width: 100%; height: 100%; }
+
+.hero-content {
+  position: relative; z-index: 2;
+  padding: 8rem 6% 6rem;
+  max-width: 1280px;
+}
+
+.hero-eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+  margin-bottom: 0.8rem;
+  animation: fadeUp 1s 0.2s ease both;
+  display: flex; align-items: center; gap: 0.8rem;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 30px; height: 1px;
+  background: var(--gold);
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 5.5vw, 5.5rem);
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--ivory);
+  margin-bottom: 0.3rem;
+  animation: fadeUp 1s 0.35s ease both;
+}
+h1 strong { font-weight: 600; color: var(--gold-light); display: block; }
+h1 em { font-style: italic; font-weight: 300; color: rgba(245,240,232,0.8); }
+
+.hero-divider {
+  width: 60px; height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--cardinal));
+  margin: 2rem 0;
+  animation: fadeUp 1s 0.5s ease both;
+}
+
+.hero-sub {
+  font-size: 1rem;
+  color: rgba(245,240,232,0.6);
+  line-height: 1.75;
+  font-weight: 300;
+  margin-bottom: 0.8rem;
+  animation: fadeUp 1s 0.55s ease both;
+  font-family: 'Libre Baskerville', serif;
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+.hero-manifeste {
+  font-size: 0.72rem;
+  color: rgba(245,240,232,0.4);
+  line-height: 1.7;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  margin-bottom: 3rem;
+  animation: fadeUp 1s 0.65s ease both;
+  text-transform: uppercase;
+}
+
+.hero-actions {
+  display: flex; gap: 1.25rem; flex-wrap: wrap;
+  animation: fadeUp 1s 0.8s ease both;
+}
+
+.btn-gold {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 1rem 2.2rem;
+  background: var(--gold);
+  color: var(--royal-deep);
+  text-decoration: none;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 1px solid var(--gold);
+  transition: all 0.3s;
+}
+.btn-gold:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(184,151,42,0.35);
+}
+
+.btn-royal {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 1rem 2.2rem;
+  background: transparent;
+  color: var(--ivory);
+  text-decoration: none;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 1px solid rgba(245,240,232,0.2);
+  transition: all 0.3s;
+}
+.btn-royal:hover {
+  border-color: var(--gold);
+  color: var(--gold-light);
+  transform: translateY(-2px);
+}
+
+/* ── MANIFESTE ── */
+#manifeste {
+  background: var(--ivory);
+  padding: 5.5rem 6%;
+  text-align: center;
+  border-bottom: 1px solid var(--ivory-deeper);
+}
+
+.manifeste-inner { max-width: 800px; margin: 0 auto; }
+
+.section-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-family: 'Raleway', sans-serif;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--royal);
+  margin-bottom: 1.5rem;
+}
+h2 em { font-style: italic; color: var(--gold); }
+
+.section-desc {
+  font-family: 'Libre Baskerville', serif;
+  font-style: italic;
+  color: var(--text-mid);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.manifeste-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 3.5rem;
+  border: 1px solid var(--ivory-deeper);
+}
+
+.pillar {
+  padding: 2.5rem 2rem;
+  border-right: 1px solid var(--ivory-deeper);
+  position: relative;
+  transition: background 0.3s;
+}
+.pillar:last-child { border-right: none; }
+.pillar::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transition: transform 0.4s;
+}
+.pillar:hover { background: rgba(184,151,42,0.04); }
+.pillar:hover::before { transform: scaleX(1); }
+
+.pillar-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3rem;
+  font-weight: 300;
+  color: var(--ivory-deeper);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.pillar h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--royal);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.pillar p {
+  font-size: 0.875rem;
+  color: var(--text-mid);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+/* ── PROMESSE ── */
+#promesse {
+  background: var(--royal);
+  padding: 6rem 6%;
+  position: relative;
+  overflow: hidden;
+}
+#promesse::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(184,151,42,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184,151,42,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.tricolor-accent {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 5px;
+  background: linear-gradient(to bottom, var(--royal-mid) 33%, var(--ivory) 33% 66%, var(--cardinal) 66%);
+  opacity: 0.6;
+}
+
+.promesse-layout {
+  position: relative; z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.promesse-text .section-label { color: var(--gold); }
+.promesse-text h2 { color: var(--ivory); }
+.promesse-text h2 em { color: var(--gold-light); }
+
+.promesse-text .section-desc {
+  color: rgba(245,240,232,0.55);
+  margin-top: 1.25rem;
+}
+
+.conviction-list {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.conviction-item {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(184,151,42,0.12);
+}
+.conviction-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+.conviction-icon {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--gold);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 30px;
+  text-align: center;
+}
+
+.conviction-item h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ivory);
+  letter-spacing: 0.03em;
+  margin-bottom: 0.3rem;
+}
+.conviction-item p {
+  font-size: 0.85rem;
+  color: rgba(245,240,232,0.5);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.promesse-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: rgba(184,151,42,0.2);
+  border: 1px solid rgba(184,151,42,0.2);
+}
+
+.stat-block {
+  background: rgba(14,26,61,0.8);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  transition: background 0.3s;
+}
+.stat-block:hover { background: rgba(14,26,61,0.95); }
+
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem;
+  font-weight: 300;
+  color: var(--gold-light);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.stat-unit { font-size: 1.2rem; color: var(--gold); }
+.stat-label {
+  font-size: 0.7rem;
+  color: rgba(245,240,232,0.4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+/* ── EXPERTISE ── */
+#expertise {
+  background: var(--ivory-dark);
+  padding: 6rem 6%;
+}
+
+.expertise-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 4rem;
+}
+
+.expertise-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5px;
+  background: var(--ivory-deeper);
+  border: 1px solid var(--ivory-deeper);
+}
+
+.expertise-card {
+  background: var(--ivory);
+  padding: 2.75rem 2.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s;
+}
+.expertise-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--cardinal));
+  transform: scaleX(0);
+  transition: transform 0.4s;
+}
+.expertise-card:hover { background: #fff; }
+.expertise-card:hover::after { transform: scaleX(1); }
+
+.card-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem;
+  font-weight: 200;
+  color: var(--ivory-deeper);
+  line-height: 1;
+  position: absolute;
+  top: 1.5rem; right: 1.75rem;
+  letter-spacing: -0.04em;
+}
+
+.card-icon-wrap {
+  width: 48px; height: 48px;
+  border: 1px solid var(--border-gold);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+  transition: all 0.3s;
+}
+.expertise-card:hover .card-icon-wrap {
+  background: var(--royal);
+  border-color: var(--royal);
+}
+
+.expertise-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--royal);
+  letter-spacing: 0.02em;
+  margin-bottom: 0.75rem;
+}
+
+.expertise-card p {
+  font-size: 0.875rem;
+  color: var(--text-mid);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.card-solutions {
+  margin-top: 1.25rem;
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+}
+
+.sol-tag {
+  font-size: 0.63rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border-gold);
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* ── OFFRES ── */
+#offres {
+  background: var(--ivory);
+  padding: 6rem 6%;
+}
+
+.offres-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 4rem;
+}
+
+.offres-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.offre-card {
+  border: 1px solid var(--ivory-deeper);
+  padding: 2.5rem;
+  position: relative;
+  transition: all 0.35s;
+  background: var(--ivory);
+}
+.offre-card:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(26,43,94,0.1);
+}
+
+.offre-card.premiere {
+  background: var(--royal);
+  border-color: var(--gold);
+}
+.offre-card.premiere::before {
+  content: 'Offre Phare';
+  position: absolute;
+  top: -1px; right: 2rem;
+  background: var(--gold);
+  color: var(--royal-deep);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.9rem;
+}
+
+.offre-roman {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+
+.offre-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.3rem;
+  color: var(--royal);
+}
+.offre-card.premiere h3 { color: var(--ivory); }
+
+.offre-divider {
+  width: 40px; height: 1px;
+  background: var(--gold);
+  margin: 1rem 0;
+}
+
+.offre-card p {
+  font-size: 0.875rem;
+  color: var(--text-mid);
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+}
+.offre-card.premiere p { color: rgba(245,240,232,0.55); }
+
+.offre-list { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+.offre-list li {
+  display: flex; align-items: flex-start; gap: 0.65rem;
+  font-size: 0.83rem;
+  color: var(--text-mid);
+  line-height: 1.4;
+}
+.offre-card.premiere .offre-list li { color: rgba(245,240,232,0.6); }
+.offre-list li::before {
+  content: '—';
+  color: var(--gold);
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  margin-top: 0.05rem;
+}
+
+/* ── SOLUTIONS ── */
+#solutions {
+  background: var(--royal-deep);
+  padding: 4rem 6%;
+  position: relative;
+  overflow: hidden;
+}
+#solutions::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(184,151,42,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184,151,42,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.solutions-inner { position: relative; z-index: 2; text-align: center; }
+.solutions-inner .section-label { color: var(--gold); margin-bottom: 2rem; }
+
+.solutions-chips {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem;
+}
+
+.sol-chip {
+  padding: 0.55rem 1.1rem;
+  border: 1px solid rgba(184,151,42,0.22);
+  font-size: 0.72rem;
+  color: rgba(245,240,232,0.5);
+  letter-spacing: 0.08em;
+  font-weight: 400;
+  transition: all 0.25s;
+  cursor: default;
+}
+.sol-chip:hover {
+  border-color: var(--gold);
+  color: var(--gold-light);
+  background: rgba(184,151,42,0.07);
+}
+
+/* ── CONTACT ── */
+#contact {
+  background: var(--ivory-dark);
+  padding: 6rem 6%;
+}
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 5rem;
+  align-items: start;
+}
+
+.contact-info h2 { text-align: left; }
+.contact-info .section-desc { text-align: left; margin-top: 1.25rem; }
+
+.contact-details {
+  margin-top: 3rem;
+  display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+.contact-detail { display: flex; gap: 1rem; align-items: flex-start; }
+
+.contact-detail-icon {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border-gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  color: var(--gold);
+}
+
+.contact-detail h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--royal);
+  margin-bottom: 0.15rem;
+}
+.contact-detail p { font-size: 0.85rem; color: var(--text-mid); font-weight: 300; }
+
+.contact-form {
+  background: var(--ivory);
+  border: 1px solid var(--ivory-deeper);
+  padding: 2.5rem;
+}
+
+.form-group { margin-bottom: 1.25rem; }
+
+label {
+  display: block;
+  font-size: 0.63rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: var(--ivory-dark);
+  border: 1px solid var(--ivory-deeper);
+  color: var(--text-dark);
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 300;
+  outline: none;
+  transition: border-color 0.25s, background 0.25s;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold);
+  background: #fff;
+}
+textarea { resize: vertical; min-height: 110px; }
+select { cursor: pointer; }
+select option { background: var(--ivory); }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.btn-submit {
+  width: 100%;
+  padding: 1.05rem;
+  background: var(--royal);
+  color: var(--ivory);
+  border: none;
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex; align-items: center; justify-content: center; gap: 0.7rem;
+  margin-top: 0.5rem;
+}
+.btn-submit:hover {
+  background: var(--royal-deep);
+  box-shadow: 0 8px 30px rgba(26,43,94,0.25);
+}
+
+.form-success {
+  display: none;
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--royal);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-style: italic;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--royal-deep);
+  padding: 2.5rem 6%;
+  border-top: 1px solid var(--border-gold);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 2rem;
+}
+
+.footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ivory);
+}
+.footer-logo span { color: var(--gold-light); }
+
+.footer-tagline {
+  text-align: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.25);
+}
+
+footer p {
+  text-align: right;
+  font-size: 0.72rem;
+  color: rgba(245,240,232,0.25);
+  font-weight: 300;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  .promesse-layout, .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+  .nav-links li:not(:last-child) { display: none; }
+}
+@media (max-width: 700px) {
+  .manifeste-pillars { grid-template-columns: 1fr; }
+  .pillar { border-right: none; border-bottom: 1px solid var(--ivory-deeper); }
+  .form-row { grid-template-columns: 1fr; }
+  footer { grid-template-columns: 1fr; text-align: center; }
+  footer p { text-align: center; }
+  .hero-content { padding-top: 7rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo-wrap">
+    <div class="logo-mark">
+      <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="30,4 56,52 4,52" stroke="#b8972a" stroke-width="2" fill="none"/>
+        <polygon points="30,16 46,46 14,46" stroke="#b8972a" stroke-width="1" fill="rgba(184,151,42,0.08)"/>
+        <rect x="24" y="34" width="12" height="12" stroke="#b8972a" stroke-width="1.5" fill="none"/>
+        <line x1="30" y1="16" x2="30" y2="34" stroke="#b8972a" stroke-width="1"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-text">Clad<span>é</span>ys</div>
+      <span class="logo-tagline">Architecture · Conseil · Cybersécurité</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#manifeste">Notre vision</a></li>
+    <li><a href="#expertise">Expertise</a></li>
+    <li><a href="#offres">Offres</a></li>
+    <li><a href="#contact" class="nav-cta">Nous contacter</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-texture"></div>
+  <div class="hero-pattern"></div>
+  <div class="tricolor-bar"></div>
+
+  <div class="hero-arch">
+    <svg viewBox="0 0 400 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M80,580 L80,200 Q80,40 200,40 Q320,40 320,200 L320,580" stroke="white" stroke-width="1.5"/>
+      <path d="M110,580 L110,210 Q110,70 200,70 Q290,70 290,210 L290,580" stroke="white" stroke-width="0.7"/>
+      <path d="M140,580 L140,230 Q140,110 200,110 Q260,110 260,230 L260,580" stroke="white" stroke-width="0.4"/>
+      <line x1="80" y1="300" x2="320" y2="300" stroke="white" stroke-width="0.5" stroke-dasharray="4,8"/>
+      <line x1="80" y1="420" x2="320" y2="420" stroke="white" stroke-width="0.5" stroke-dasharray="4,8"/>
+      <rect x="160" y="460" width="80" height="120" stroke="white" stroke-width="1"/>
+      <rect x="172" y="460" width="56" height="80" stroke="white" stroke-width="0.5"/>
+    </svg>
+  </div>
+
+  <div class="corner-ornament tl">
+    <svg viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5,5 L5,38 M5,5 L38,5" stroke="#b8972a" stroke-width="1.5"/>
+      <path d="M10,10 L10,30 M10,10 L30,10" stroke="#b8972a" stroke-width="0.6" opacity="0.5"/>
+      <circle cx="5" cy="5" r="2" fill="#b8972a"/>
+    </svg>
+  </div>
+  <div class="corner-ornament br">
+    <svg viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M65,65 L65,32 M65,65 L32,65" stroke="#b8972a" stroke-width="1.5"/>
+      <path d="M60,60 L60,40 M60,60 L40,60" stroke="#b8972a" stroke-width="0.6" opacity="0.5"/>
+      <circle cx="65" cy="65" r="2" fill="#b8972a"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Conseil Microsoft · PME &amp; ETI</div>
+
+    <h1>
+      L'excellence des<br>
+      <strong>grands groupes,</strong>
+      <em>à votre échelle.</em>
+    </h1>
+
+    <div class="hero-divider"></div>
+
+    <p class="hero-sub">
+      Cladéys accompagne les PME et ETI dans leur transformation numérique Microsoft — avec la rigueur et la profondeur d'expertise habituellement réservées aux grandes organisations.
+    </p>
+
+    <p class="hero-manifeste">
+      Bâtir l'avenir · Protéger l'essentiel · Une vision intégrée, une confiance durable
+    </p>
+
+    <div class="hero-actions">
+      <a href="#offres" class="btn-gold">
+        Découvrir nos offres
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#contact" class="btn-royal">Prendre rendez-vous</a>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTE -->
+<section id="manifeste">
+  <div class="manifeste-inner">
+    <div class="section-label reveal">Notre conviction</div>
+    <h2 class="reveal">La cybersécurité n'est pas<br>un <em>privilège de grand groupe.</em></h2>
+    <p class="section-desc reveal">Une donnée non sécurisée représente le même danger pour une PME de 50 personnes que pour un groupe du CAC 40. Cladéys est né de cette conviction : les entreprises de taille intermédiaire méritent les mêmes outils, le même niveau d'exigence, la même architecture de protection.</p>
+
+    <div class="divider-gold reveal"><span>✦</span></div>
+
+    <div class="manifeste-pillars reveal">
+      <div class="pillar">
+        <div class="pillar-number">I</div>
+        <h3>Architecture</h3>
+        <p>Concevoir des systèmes robustes, évolutifs et alignés sur vos objectifs métier — avec la vision long terme d'un architecte, pas d'un technicien.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-number">II</div>
+        <h3>Conseil</h3>
+        <p>Éclairer vos décisions stratégiques avec une vision indépendante et experte. Sans conflit d'intérêt, sans jargon inutile.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-number">III</div>
+        <h3>Cybersécurité</h3>
+        <p>Protéger vos actifs numériques et garantir la résilience de vos environnements — à la mesure de votre organisation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMESSE -->
+<section id="promesse">
+  <div class="tricolor-accent"></div>
+  <div class="promesse-layout">
+    <div class="promesse-text">
+      <div class="section-label reveal">Notre promesse</div>
+      <h2 class="reveal">Des outils poussés<br>à leur <em>maximum,</em><br>sans compromis.</h2>
+      <p class="section-desc reveal">Les solutions Microsoft 365, Azure ou Defender ne sont pas réservées aux DSI de 200 personnes. Nous vous donnons accès à la pleine puissance de l'écosystème Microsoft — correctement configuré, correctement sécurisé.</p>
+
+      <ul class="conviction-list">
+        <li class="conviction-item reveal">
+          <div class="conviction-icon">≡</div>
+          <div>
+            <h4>Même niveau d'exigence</h4>
+            <p>Nous appliquons les mêmes standards de configuration et de sécurité que pour les déploiements grands comptes. Pas de version allégée pour les PME.</p>
+          </div>
+        </li>
+        <li class="conviction-item reveal">
+          <div class="conviction-icon">◈</div>
+          <div>
+            <h4>Adapté à votre réalité</h4>
+            <p>Budget, équipes, maturité IT : nous concevons des solutions dimensionnées à votre organisation, déployables par étapes.</p>
+          </div>
+        </li>
+        <li class="conviction-item reveal">
+          <div class="conviction-icon">✦</div>
+          <div>
+            <h4>Transfert de souveraineté</h4>
+            <p>Votre autonomie est notre objectif. Nous documentons, formons et rendons vos équipes capables d'opérer ce que nous construisons ensemble.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="promesse-stats reveal">
+      <div class="stat-block">
+        <div class="stat-num">10<span class="stat-unit">+</span></div>
+        <div class="stat-label">Années d'expérience sur l'écosystème Microsoft</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">50<span class="stat-unit">+</span></div>
+        <div class="stat-label">Projets déployés en PME &amp; ETI</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">100<span class="stat-unit">%</span></div>
+        <div class="stat-label">Spécialiste certifié Microsoft 365 &amp; Security</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">24<span class="stat-unit">h</span></div>
+        <div class="stat-label">Délai de réponse garanti pour chaque demande</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERTISE -->
+<section id="expertise">
+  <div class="expertise-header">
+    <div class="section-label reveal">Domaines d'expertise</div>
+    <h2 class="reveal">Un savoir-faire pointu,<br><em>six territoires maîtrisés.</em></h2>
+  </div>
+
+  <div class="expertise-grid">
+    <div class="expertise-card reveal">
+      <div class="card-number">01</div>
+      <div class="card-icon-wrap">🏢</div>
+      <h3>Modern Workplace</h3>
+      <p>Conception et déploiement d'environnements de travail modernes. Collaboration, mobilité, productivité — nous transformons vos usages numériques en profondeur.</p>
+      <div class="card-solutions">
+        <span class="sol-tag">Microsoft 365</span>
+        <span class="sol-tag">Teams</span>
+        <span class="sol-tag">SharePoint</span>
+      </div>
+    </div>
+    <div class="expertise-card reveal">
+      <div class="card-number">02</div>
+      <div class="card-icon-wrap">🛡️</div>
+      <h3>Cybersécurité</h3>
+      <p>Sécurisation de vos actifs avec Microsoft Defender, Sentinel et Entra ID. Architecture Zero Trust, gestion des identités et réponse aux incidents.</p>
+      <div class="card-solutions">
+        <span class="sol-tag">Defender</span>
+        <span class="sol-tag">Sentinel</span>
+        <span class="sol-tag">Entra ID</span>
+      </div>
+    </div>
+    <div class="expertise-card reveal">
+      <div class="card-number">03</div>
+      <div class="card-icon-wrap">☁️</div>
+      <h3>Cloud &amp; Azure</h3>
+      <p>Migration, architecture et optimisation de vos infrastructures sur Azure. Solutions hybrides robustes alignées sur vos objectifs business et votre budget.</p>
+      <div class="card-solutions">
+        <span class="sol-tag">Azure</span>
+        <span class="sol-tag">Hybrid Cloud</span>
+      </div>
+    </div>
+    <div class="expertise-card reveal">
+      <div class="card-number">04</div>
+      <div class="card-icon-wrap">📋</div>
+      <h3>Gestion des Terminaux</h3>
+      <p>Déploiement et administration de Microsoft Intune pour la gestion unifiée de vos postes Windows, iOS et Android. Politiques de conformité et automatisation.</p>
+      <div class="card-solutions">
+        <span class="sol-tag">Intune</span>
+        <span class="sol-tag">Autopilot</span>
+        <span class="sol-tag">MDM</span>
+      </div>
+    </div>
+    <div class="expertise-card reveal">
+      <div class="card-number">05</div>
+      <div class="card-icon-wrap">🔒</div>
+      <h3>Gouvernance &amp; Conformité</h3>
+      <p>Microsoft Purview pour la classification, la protection et la gouvernance de vos données. Conformité RGPD, DLP et audits de sécurité approfondis.</p>
+      <div class="card-solutions">
+        <span class="sol-tag">Purview</span>
+        <span class="sol-tag">RGPD</span>
+        <span class="sol-tag">DLP</span>
+      </div>
+    </div>
+    <div class="expertise-card reveal">
+      <div class="card-number">06</div>
+      <div class="card-icon-wrap">⚡</div>
+      <h3>Automatisation</h3>
+      <p>Création de flux automatisés et d'applications métier avec la Power Platform. Valorisez vos données et éliminez les tâches répétitives à faible valeur ajoutée.</p>
+      <div class="card-solutions">
+        <span class="sol-tag">Power Automate</span>
+        <span class="sol-tag">Power BI</span>
+        <span class="sol-tag">Power Apps</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFRES -->
+<section id="offres">
+  <div class="offres-header">
+    <div class="section-label reveal">Nos offres</div>
+    <h2 class="reveal">Des missions taillées<br><em>à votre mesure.</em></h2>
+    <p class="section-desc reveal" style="font-size:0.9rem; margin-top:1rem; font-style:normal; font-family:'Raleway',sans-serif; font-weight:300;">Nous intervenons en mode projet, en régie ou en conseil stratégique — selon votre contexte et vos enjeux.</p>
+  </div>
+
+  <div class="offres-grid">
+    <div class="offre-card reveal">
+      <div class="offre-roman">I — Conseil</div>
+      <h3>Diagnostic &amp; Stratégie</h3>
+      <div class="offre-divider"></div>
+      <p>Évaluation de votre maturité numérique et cybersécurité. Recommandations de feuille de route et définition d'une architecture cible adaptée à votre taille et vos ambitions.</p>
+      <ul class="offre-list">
+        <li>Audit de l'existant Microsoft 365 / Azure</li>
+        <li>Évaluation du Secure Score et des risques</li>
+        <li>Feuille de route priorisée et budgétisée</li>
+        <li>Restitution aux décideurs</li>
+      </ul>
+    </div>
+
+    <div class="offre-card premiere reveal">
+      <div class="offre-roman">II — Accompagnement</div>
+      <h3>Déploiement &amp; Transformation</h3>
+      <div class="offre-divider"></div>
+      <p>Pilotage end-to-end de votre transformation numérique Microsoft — de la conception à la mise en production, avec conduite du changement intégrée.</p>
+      <ul class="offre-list">
+        <li>Cadrage et planification projet</li>
+        <li>Déploiement Modern Workplace complet</li>
+        <li>Sécurisation Zero Trust &amp; Defender</li>
+        <li>Formation et conduite du changement</li>
+        <li>Hypercare post-déploiement</li>
+      </ul>
+    </div>
+
+    <div class="offre-card reveal">
+      <div class="offre-roman">III — Expertise</div>
+      <h3>Régie &amp; Renfort Technique</h3>
+      <div class="offre-divider"></div>
+      <p>Mise à disposition d'un expert Microsoft certifié en renfort de vos équipes internes ou pour des missions ponctuelles à haute valeur ajoutée.</p>
+      <ul class="offre-list">
+        <li>Renfort équipe IT en régie</li>
+        <li>Expertise Entra ID / Intune / Sentinel</li>
+        <li>Revue de configuration et durcissement</li>
+        <li>Support niveau 3 et escalade critique</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section id="solutions">
+  <div class="solutions-inner">
+    <div class="section-label">Solutions Microsoft maîtrisées</div>
+    <div class="solutions-chips">
+      <span class="sol-chip">Microsoft 365</span>
+      <span class="sol-chip">Azure</span>
+      <span class="sol-chip">Entra ID</span>
+      <span class="sol-chip">Microsoft Defender</span>
+      <span class="sol-chip">Microsoft Intune</span>
+      <span class="sol-chip">Microsoft Purview</span>
+      <span class="sol-chip">Microsoft Sentinel</span>
+      <span class="sol-chip">Microsoft Teams</span>
+      <span class="sol-chip">SharePoint</span>
+      <span class="sol-chip">Power Platform</span>
+      <span class="sol-chip">Azure AD B2C</span>
+      <span class="sol-chip">Windows Autopilot</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-layout">
+    <div class="contact-info">
+      <div class="section-label reveal">Contact</div>
+      <h2 class="reveal" style="text-align:left;">Parlons de<br><em>votre projet.</em></h2>
+      <p class="section-desc reveal" style="text-align:left;">Décrivez-nous votre contexte. Nous reviendrons vers vous sous 24 heures pour un premier échange confidentiel et sans engagement.</p>
+
+      <div class="contact-details">
+        <div class="contact-detail reveal">
+          <div class="contact-detail-icon">✉</div>
+          <div>
+            <h4>Email</h4>
+            <p>contact@cladeys.fr</p>
+          </div>
+        </div>
+        <div class="contact-detail reveal">
+          <div class="contact-detail-icon">📍</div>
+          <div>
+            <h4>Localisation</h4>
+            <p>Bordeaux — Interventions toute France &amp; télétravail</p>
+          </div>
+        </div>
+        <div class="contact-detail reveal">
+          <div class="contact-detail-icon">🕐</div>
+          <div>
+            <h4>Délai de réponse</h4>
+            <p>Sous 24 heures ouvrées, garanti</p>
+          </div>
+        </div>
+        <div class="contact-detail reveal">
+          <div class="contact-detail-icon">🔒</div>
+          <div>
+            <h4>Confidentialité</h4>
+            <p>Chaque échange est strictement confidentiel</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form reveal">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="prenom">Prénom</label>
+          <input type="text" id="prenom" placeholder="Jean">
+        </div>
+        <div class="form-group">
+          <label for="nom">Nom</label>
+          <input type="text" id="nom" placeholder="Dupont">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email professionnel</label>
+          <input type="email" id="email" placeholder="jean.dupont@entreprise.fr">
+        </div>
+        <div class="form-group">
+          <label for="societe">Société</label>
+          <input type="text" id="societe" placeholder="Votre entreprise">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="taille">Taille de l'organisation</label>
+        <select id="taille">
+          <option value="" disabled selected>Sélectionnez</option>
+          <option>PME — moins de 50 collaborateurs</option>
+          <option>PME — 50 à 250 collaborateurs</option>
+          <option>ETI — 250 à 5 000 collaborateurs</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="sujet">Nature de la demande</label>
+        <select id="sujet">
+          <option value="" disabled selected>Sélectionnez un domaine</option>
+          <option>Diagnostic &amp; Stratégie Microsoft</option>
+          <option>Projet Modern Workplace / Microsoft 365</option>
+          <option>Cybersécurité &amp; Zero Trust</option>
+          <option>Migration Azure / Cloud</option>
+          <option>Gestion des terminaux (Intune)</option>
+          <option>Gouvernance &amp; Conformité (Purview)</option>
+          <option>Régie / Renfort technique</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="message">Décrivez votre besoin</label>
+        <textarea id="message" placeholder="Contexte, enjeux, contraintes, délais envisagés…"></textarea>
+      </div>
+      <button class="btn-submit" onclick="handleSubmit(event)">
+        Envoyer ma demande
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </button>
+      <div class="form-success" id="successMsg">
+        ✦ &nbsp; Votre demande a bien été transmise. Nous vous répondrons dans les 24 heures.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Clad<span>é</span>ys</div>
+  <div class="footer-tagline">Architecture · Conseil · Cybersécurité</div>
+  <p>© 2025 Cladéys — Tous droits réservés</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 90);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = document.querySelector('.btn-submit');
+    btn.textContent = 'Envoi en cours…';
+    btn.style.opacity = '0.6';
+    setTimeout(() => {
+      btn.style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    }, 1200);
+  }
+
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.boxShadow =
+      window.scrollY > 50 ? '0 4px 30px rgba(0,0,0,0.4)' : 'none';
+  });
+</script>
+</body>
+</html>

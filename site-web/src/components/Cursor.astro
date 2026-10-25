@@ -1,0 +1,128 @@
+---
+/* Couche d'interaction à la souris, volontairement discrète :
+   - curseur personnalisé : un point or précis + un anneau fin qui suit avec un léger retard ;
+     l'anneau s'ouvre sur les liens et boutons, se resserre au clic, passe en encre sur les sections claires ;
+   - boutons magnétiques : ils glissent de quelques pixels vers le pointeur ;
+   - cartes [data-tilt] : légère inclinaison vers le pointeur et reflet or qui le suit.
+   Actif seulement avec une souris (hover + pointer fine) et sans préférence de mouvement réduit. */
+---
+<div class="cursor" data-cursor aria-hidden="true">
+  <span class="cursor__dot"></span>
+  <span class="cursor__ring"></span>
+</div>
+
+<style is:global>
+  @media (hover: hover) and (pointer: fine) {
+    html.motion-ok.has-cursor, html.motion-ok.has-cursor a, html.motion-ok.has-cursor button { cursor: none; }
+
+    .cursor { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 0.3s ease; }
+    html.has-cursor .cursor { opacity: 1; }
+    .cursor__dot, .cursor__ring {
+      position: absolute; left: 0; top: 0; border-radius: 50%;
+      transform: translate(-50%, -50%);
+      will-change: transform;
+    }
+    .cursor__dot { width: 6px; height: 6px; background: var(--gold-light); box-shadow: 0 0 10px rgba(226, 201, 139, 0.6); transition: width 0.25s ease, height 0.25s ease, opacity 0.25s ease; }
+    .cursor__ring {
+      width: 38px; height: 38px;
+      border: 1px solid var(--gold);
+      box-shadow: inset 0 0 0 1px rgba(206, 171, 112, 0.12);
+      transition: width 0.3s cubic-bezier(.2,.8,.2,1), height 0.3s cubic-bezier(.2,.8,.2,1), border-color 0.3s ease, background-color 0.3s ease, opacity 0.3s ease;
+    }
+    .cursor--hover .cursor__ring { width: 60px; height: 60px; background: rgba(206, 171, 112, 0.08); border-color: var(--gold-light); }
+    .cursor--hover .cursor__dot { width: 4px; height: 4px; }
+    .cursor--down .cursor__ring { width: 30px; height: 30px; }
+    .cursor--light .cursor__dot { background: var(--navy-deep); box-shadow: 0 0 10px rgba(28, 43, 94, 0.35); }
+    .cursor--light .cursor__ring { border-color: var(--navy-deep); box-shadow: inset 0 0 0 1px rgba(28, 43, 94, 0.12); }
+    .cursor--light.cursor--hover .cursor__ring { background: rgba(28, 43, 94, 0.06); border-color: var(--navy-deep); }
+    .cursor--hidden { opacity: 0 !important; }
+
+    /* boutons magnétiques */
+    .btn { transform: translate(var(--mx, 0px), var(--my, 0px)); transition-property: background-color, color, box-shadow, transform; }
+    .btn:hover { transform: translate(var(--mx, 0px), calc(var(--my, 0px) - 1px)); }
+
+    /* cartes inclinables + reflet */
+    [data-tilt] {
+      transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+      transition: transform 0.35s cubic-bezier(.2,.8,.2,1), border-color 0.35s ease, background-color 0.35s ease, box-shadow 0.35s ease, opacity 0.4s ease;
+      position: relative;
+    }
+    [data-tilt]::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), rgba(226, 201, 139, 0.16), rgba(226, 201, 139, 0) 65%);
+      opacity: var(--sheen, 0);
+      transition: opacity 0.35s ease;
+      pointer-events: none;
+    }
+  }
+</style>
+
+<script>
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const root = document.querySelector<HTMLElement>('[data-cursor]');
+  if (fine && !reduced && root) {
+    const dot = root.querySelector<HTMLElement>('.cursor__dot')!;
+    const ring = root.querySelector<HTMLElement>('.cursor__ring')!;
+    let x = innerWidth / 2, y = innerHeight / 2, rx = x, ry = y, shown = false, raf = 0;
+    let lightCheck = 0;
+
+    const tick = () => {
+      rx += (x - rx) * 0.18; ry += (y - ry) * 0.18;
+      dot.style.transform = `translate(${x - 3}px, ${y - 3}px)`;
+      ring.style.transform = `translate(${rx - ring.offsetWidth / 2}px, ${ry - ring.offsetHeight / 2}px)`;
+      if (Math.abs(x - rx) > 0.1 || Math.abs(y - ry) > 0.1) raf = requestAnimationFrame(tick); else raf = 0;
+    };
+    const move = (e: PointerEvent) => {
+      x = e.clientX; y = e.clientY;
+      if (!shown) { shown = true; document.documentElement.classList.add('has-cursor'); rx = x; ry = y; }
+      root.classList.remove('cursor--hidden');
+      if (!raf) raf = requestAnimationFrame(tick);
+      // encre navy sur les sections claires (vérifié au plus toutes les 80 ms)
+      const now = performance.now();
+      if (now - lightCheck > 80) {
+        lightCheck = now;
+        const el = document.elementFromPoint(x, y);
+        root.classList.toggle('cursor--light', !!el && !!el.closest('[data-theme="light"]'));
+      }
+    };
+    window.addEventListener('pointermove', move, { passive: true });
+    document.addEventListener('pointerleave', () => root.classList.add('cursor--hidden'));
+    document.addEventListener('pointerenter', () => root.classList.remove('cursor--hidden'));
+    window.addEventListener('pointerdown', () => root.classList.add('cursor--down'));
+    window.addEventListener('pointerup', () => root.classList.remove('cursor--down'));
+    const hoverables = 'a, button, [data-tilt], .cell';
+    document.addEventListener('pointerover', (e) => { if ((e.target as Element).closest(hoverables)) root.classList.add('cursor--hover'); });
+    document.addEventListener('pointerout', (e) => { if ((e.target as Element).closest(hoverables)) root.classList.remove('cursor--hover'); });
+
+    /* boutons magnétiques */
+    document.querySelectorAll<HTMLElement>('.btn').forEach((btn) => {
+      btn.addEventListener('pointermove', (e) => {
+        const r = btn.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+        const dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+        btn.style.setProperty('--mx', `${(dx * 7).toFixed(1)}px`);
+        btn.style.setProperty('--my', `${(dy * 5).toFixed(1)}px`);
+      });
+      btn.addEventListener('pointerleave', () => { btn.style.setProperty('--mx', '0px'); btn.style.setProperty('--my', '0px'); });
+    });
+
+    /* cartes inclinables */
+    document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((card) => {
+      const max = Number(card.dataset.tilt) || 4;
+      card.addEventListener('pointermove', (e) => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        card.style.setProperty('--ry', `${((px - 0.5) * 2 * max).toFixed(2)}deg`);
+        card.style.setProperty('--rx', `${((0.5 - py) * 2 * max).toFixed(2)}deg`);
+        card.style.setProperty('--mx', `${(px * 100).toFixed(1)}%`);
+        card.style.setProperty('--my', `${(py * 100).toFixed(1)}%`);
+        card.style.setProperty('--sheen', '1');
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.setProperty('--rx', '0deg'); card.style.setProperty('--ry', '0deg'); card.style.setProperty('--sheen', '0');
+      });
+    });
+  }
+</script>

@@ -1,0 +1,291 @@
+---
+/* Section 3 — Les trois tensions du dirigeant de PME, et la réponse Cladéys en face de chacune.
+   Fond IVOIRE (rupture volontaire entre les sections navy 2 et 4), comme les slides de contenu
+   de la charte : titre navy, filet et sous-titre or, bandeau diagonal tricolore en pied (signature).
+   Colonne vertébrale or qui se trace au scroll, trois sceaux (bordeaux, vert anglais, violet royal). */
+import { FLEUR_DE_LYS, FLEUR_CENTER } from '../assets/ornaments';
+
+const tensions = [
+  {
+    numeral: 'I',
+    tone: 'bordeaux',
+    quote: 'Nous n’avons pas les moyens d’un grand compte.',
+    title: 'Vous payez un résultat, pas des journées.',
+    text: 'Chaque offre Cladéys est au forfait. Le périmètre, les livrables et le prix sont connus avant de commencer. Si la mission demande plus d’efforts que prévu, c’est notre risque, pas le vôtre.',
+  },
+  {
+    numeral: 'II',
+    tone: 'green',
+    quote: 'Nous n’avons pas le temps ni la bande passante d’en faire un projet.',
+    title: 'Des projets courts.',
+    text: 'Les offres sont calibrées et largement automatisées. Quelques heures de votre équipe suffisent pour ouvrir l’accès et répondre à nos questions. Le reste se passe sans vous mobiliser.',
+  },
+  {
+    numeral: 'III',
+    tone: 'violet',
+    quote: 'C’est opaque. J’ai peur de me faire avoir.',
+    title: 'Des priorités lisibles, une mesure avant et après.',
+    text: 'Chaque restitution classe les actions par criticité et par effort, et vous les appliquez par vagues, à votre rythme. Nous ne touchons aucune commission sur les licences : notre seul intérêt est le vôtre.',
+  },
+];
+const lysTransform = (size: number) =>
+  `rotate(45) scale(${size / 672}) translate(${-FLEUR_CENTER.x} ${FLEUR_CENTER.y}) scale(1 -1)`;
+---
+
+<section class="tensions" id="tensions" data-tensions data-theme="light" aria-labelledby="tensions-title">
+  <div class="tensions__sketch" aria-hidden="true"></div>
+
+  <div class="container tensions__inner">
+    <header class="tensions__head">
+      <p class="tensions__chapter" aria-hidden="true">
+        <span class="tensions__rule"></span>
+        <span class="tensions__numeral">III</span>
+        <span class="tensions__rule"></span>
+      </p>
+      <p class="eyebrow tensions__eyebrow">Les tensions du dirigeant de PME</p>
+      <h2 id="tensions-title" class="tensions__title">Trois objections qui reviennent fréquemment.</h2>
+      <p class="lede tensions__lede">
+        Elles sont légitimes. Cladéys est une société construite pour répondre aux exigences et aux demandes des PME.
+      </p>
+    </header>
+
+    <div class="tensions__body">
+      <div class="spine" aria-hidden="true">
+        <span class="spine__track"></span>
+        <span class="spine__line" data-spine></span>
+        <svg class="spine__cap" viewBox="-420 -420 840 840"><g transform={lysTransform(420)}><path d={FLEUR_DE_LYS} fill="currentColor" /></g></svg>
+      </div>
+
+      <ol class="tensions__list">
+        {tensions.map((t) => (
+          <li class={`tension tension--${t.tone}`} data-tension>
+            <blockquote class="tension__quote">
+              <span class="tension__mark" aria-hidden="true">«</span>
+              <p>{t.quote}</p>
+              <span class="tension__mark tension__mark--close" aria-hidden="true">»</span>
+            </blockquote>
+            <div class="tension__seal" aria-hidden="true">
+              <span class="tension__seal-ring"></span>
+              <span class="tension__seal-num">{t.numeral}</span>
+            </div>
+            <div class="tension__answer">
+              <h3 class="tension__answer-title">{t.title}</h3>
+              <p class="tension__answer-text">{t.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="paradox" data-paradox>
+      <p class="eyebrow eyebrow--rule tensions__eyebrow">Le paradoxe des PME</p>
+      <p class="paradox__text">
+        <span class="paradox__line">Les plus ciblées. Les moins accompagnées.</span>
+        <span class="paradox__line paradox__line--italic">Et pourtant celles qui ont la possibilité d’agir le plus vite.</span>
+      </p>
+      <a class="btn btn--navy" href="#offres">Découvrir les offres</a>
+    </div>
+  </div>
+
+  <!-- signature Cladéys : bandeau diagonal navy → bordeaux → or qui s'estompe vers la droite -->
+  <div class="signature-band" aria-hidden="true"><i></i><i></i><i></i></div>
+</section>
+
+<style>
+  .tensions {
+    --ink: var(--navy-deep);
+    --ink-2: var(--text-on-light-2);
+    --accent: var(--gold-deep);
+    position: relative;
+    padding: clamp(6rem, 14vh, 11rem) 0 clamp(7rem, 16vh, 12rem);
+    background: var(--ivory);
+    color: var(--ink);
+    overflow: hidden;
+    isolation: isolate;
+    border-top: 1px solid var(--gold);
+  }
+  .tensions__sketch {
+    position: absolute; inset: 0;
+    background: url('/brand/pattern-sketch.png?v=4') center / clamp(260px, 22vw, 360px) repeat;
+    filter: invert(1);                 /* motif blanc → encre, sur ivoire */
+    opacity: 0.045;
+    z-index: -1;
+  }
+  .tensions__inner { display: flex; flex-direction: column; align-items: center; gap: clamp(3rem, 8vh, 6rem); }
+
+  .tensions__head { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.2rem; max-width: 960px; }
+  .tensions__chapter { display: inline-flex; align-items: center; gap: 1.2rem; margin: 0 0 0.4rem; color: var(--accent); }
+  .tensions__rule { width: clamp(40px, 8vw, 110px); height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
+  .tensions__chapter .tensions__rule:last-child { background: linear-gradient(90deg, var(--accent), transparent); }
+  .tensions__numeral { font-family: var(--font-inscription); font-size: clamp(1.4rem, 2.2vw, 2rem); font-weight: 600; letter-spacing: 0.2em; padding-left: 0.2em; }
+  .tensions__eyebrow { color: var(--accent); }
+  .tensions__eyebrow::before, .tensions__eyebrow::after { background: var(--accent); }
+  .tensions__title { line-height: 1.1; color: var(--ink); }
+  .tensions__lede { color: var(--ink-2); max-width: 52ch; }
+
+  /* ── corps : colonne vertébrale + trois rangées ── */
+  .tensions__body { position: relative; width: 100%; }
+  .spine {
+    position: absolute; left: 50%; top: 0; bottom: 0;
+    width: 1px; transform: translateX(-50%);
+    color: var(--accent);
+  }
+  .spine__track { position: absolute; inset: 0; background: rgba(169, 136, 79, 0.25); }
+  .spine__line {
+    position: absolute; left: 0; right: 0; top: 0; height: 100%;
+    background: linear-gradient(to bottom, var(--gold-deep), var(--gold));
+    transform-origin: top; transform: scaleY(0);
+  }
+  .spine__cap { position: absolute; left: 50%; bottom: -26px; width: 52px; height: 52px; transform: translateX(-50%); }
+
+  .tensions__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: clamp(3rem, 8vh, 6rem); }
+  .tension {
+    --tone: var(--bordeaux);
+    display: grid;
+    grid-template-columns: 1fr 96px 1fr;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 3rem);
+  }
+  .tension--bordeaux { --tone: var(--bordeaux); }
+  .tension--green { --tone: var(--green); }
+  .tension--violet { --tone: var(--royal-violet); }
+
+  .tension__quote { margin: 0; position: relative; text-align: right; padding-right: 0.5rem; }
+  .tension__quote p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.5rem);
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .tension__mark {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 4vw, 4rem);
+    line-height: 0.6;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .tension__mark--close { margin: 0.5rem 0 0; }
+
+  .tension__seal { position: relative; width: 96px; height: 96px; display: grid; place-items: center; justify-self: center; }
+  .tension__seal-ring {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--tone) 80%, white 20%), var(--tone) 60%, color-mix(in srgb, var(--tone) 70%, black 30%));
+    box-shadow: 0 0 0 1px var(--gold), 0 0 0 5px var(--ivory), 0 0 0 6px var(--gold), 0 18px 36px rgba(38, 51, 87, 0.28);
+  }
+  .tension__seal-ring::after { content: ''; position: absolute; inset: 7px; border-radius: 50%; border: 1px solid rgba(238, 231, 210, 0.4); }
+  .tension__seal-num {
+    position: relative;
+    font-family: var(--font-inscription);
+    font-weight: 700; font-size: 1.6rem; letter-spacing: 0.1em; padding-left: 0.1em;
+    color: var(--ivory);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+
+  .tension__answer { padding-left: 0.5rem; }
+  .tension__answer-title {
+    font-family: var(--font-display);
+    font-weight: 650;
+    font-size: clamp(1.35rem, 1.1rem + 1vw, 2rem);
+    line-height: 1.2;
+    color: var(--tone);
+    margin-bottom: 0.7rem;
+  }
+  .tension__answer-text { color: var(--text-on-light); max-width: 44ch; line-height: 1.55; }
+
+  /* ── paradoxe ── */
+  .paradox { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.4rem; margin-top: 1rem; }
+  .paradox__text {
+    display: flex; flex-direction: column; gap: 0.3rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.4rem);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .paradox__line { display: block; }
+  .paradox__line--italic { font-style: italic; font-weight: 500; color: var(--gold-deep); }
+
+
+  /* ── signature : bandeau diagonal tricolore en pied ── */
+  .signature-band {
+    position: absolute; left: -4vw; bottom: clamp(26px, 3vw, 44px);
+    width: 62vw; height: clamp(16px, 2.2vw, 34px);
+    transform: skewX(-32deg);
+    display: flex;
+    -webkit-mask-image: linear-gradient(90deg, #000 55%, transparent 100%);
+    mask-image: linear-gradient(90deg, #000 55%, transparent 100%);
+    pointer-events: none;
+  }
+  .signature-band i { flex: 1; display: block; }
+  .signature-band i:nth-child(1) { background: var(--navy); }
+  .signature-band i:nth-child(2) { background: var(--bordeaux); }
+  .signature-band i:nth-child(3) { background: var(--gold); }
+
+  @media (max-width: 860px) {
+    .spine { left: 30px; transform: none; }
+    .spine__cap { left: 0; transform: translateX(-50%); }
+    .tension {
+      grid-template-columns: 60px 1fr;
+      grid-template-areas: 'seal quote' 'seal answer';
+      align-items: start;
+      gap: 0.6rem 1.2rem;
+    }
+    .tension__seal { grid-area: seal; width: 60px; height: 60px; justify-self: start; }
+    .tension__seal-num { font-size: 1.1rem; }
+    .tension__quote { grid-area: quote; text-align: left; padding: 0; }
+    .tension__mark { display: inline; margin: 0 0.2em 0 0; font-size: 1.6em; line-height: 1; }
+    .tension__mark--close { margin: 0 0 0 0.2em; }
+    .tension__quote p { display: inline; }
+    .tension__answer { grid-area: answer; padding: 0; }
+    .signature-band { width: 90vw; }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  const section = document.querySelector<HTMLElement>('[data-tensions]');
+  if (section) {
+    const reduced = document.documentElement.classList.contains('motion-reduced');
+    const spine = section.querySelector<HTMLElement>('[data-spine]')!;
+    const body = section.querySelector<HTMLElement>('.tensions__body')!;
+    const rows = Array.from(section.querySelectorAll<HTMLElement>('[data-tension]'));
+
+    if (reduced) {
+      spine.style.transform = 'scaleY(1)';
+    } else {
+      gsap.from(section.querySelectorAll('.tensions__head > *'), {
+        y: 30, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power2.out',
+        scrollTrigger: { trigger: section, start: 'top 72%' },
+      });
+      gsap.to(spine, {
+        scaleY: 1, ease: 'none',
+        scrollTrigger: { trigger: body, start: 'top 70%', end: 'bottom 55%', scrub: 0.4 },
+      });
+      const mobile = window.matchMedia('(max-width: 860px)').matches;
+      rows.forEach((row) => {
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: row, start: 'top 78%', once: true },
+          defaults: { ease: 'power3.out' },
+        });
+        tl.from(row.querySelector('.tension__seal'), { scale: 0.4, opacity: 0, duration: 0.7, ease: 'back.out(1.8)' }, 0);
+        tl.from(row.querySelector('.tension__quote'), { x: mobile ? 0 : -40, y: mobile ? 20 : 0, opacity: 0, duration: 0.9 }, 0.1);
+        tl.from(row.querySelectorAll('.tension__answer > *'), { x: mobile ? 0 : 40, y: mobile ? 20 : 0, opacity: 0, duration: 0.9, stagger: 0.12 }, 0.3);
+      });
+      gsap.from(section.querySelectorAll('[data-paradox] > *'), {
+        y: 24, opacity: 0, duration: 0.9, stagger: 0.15, ease: 'power2.out',
+        scrollTrigger: { trigger: section.querySelector('[data-paradox]'), start: 'top 85%' },
+      });
+      gsap.from(section.querySelector('.signature-band'), {
+        xPercent: -30, opacity: 0, duration: 1.1, ease: 'power3.out',
+        scrollTrigger: { trigger: section.querySelector('.signature-band'), start: 'top 95%' },
+      });
+    }
+  }
+</script>

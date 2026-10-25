@@ -1,0 +1,293 @@
+---
+/* Section 2 — Le constat : trois chiffres sourcés, comptés au scroll, chacun dans un anneau or
+   dont l'arc se trace jusqu'à la valeur. Chapitrage en chiffres romains, fleurs de lys de la police
+   d'ornements entre les colonnes. Ton factuel, jamais anxiogène. */
+import { FLEUR_DE_LYS, FLEUR_CENTER } from '../assets/ornaments';
+
+const stats = [
+  {
+    value: 48,
+    suffix: '%',
+    label: 'des victimes de rançongiciel en France sont des TPE, des PME et des ETI.',
+    detail: 'Elles n’en représentaient que 37 % l’année précédente.',
+    source: 'ANSSI · Panorama de la cybermenace 2025',
+    href: 'https://cert.cyber.gouv.fr/uploads/CERTFR-2026-CTI-002.pdf',
+  },
+  {
+    value: 48,
+    suffix: 'h',
+    arc: 1,
+    label: 'entre la publication d’une vulnérabilité et son exploitation active.',
+    detail: 'Un délai qui se comptait en jours il y a deux ans. L’IA accélère tout : la détection comme l’attaque.',
+    source: 'FortiGuard Labs · Global Threat Landscape Report 2026',
+    href: 'https://www.fortinet.com/resources/reports/threat-landscape-report',
+  },
+  {
+    value: 58,
+    suffix: '%',
+    label: 'des dirigeants de TPE et de PME s’estiment bien protégés.',
+    detail: 'Trois sur quatre consacrent moins de 2 000 € par an à leur sécurité.',
+    source: 'Cybermalveillance.gouv.fr · OpinionWay · ImpactCyber 2025',
+    href: 'https://www.cybermalveillance.gouv.fr/medias/2025/10/Cybermalveillance-TPE-PME-2025-Rapport-Final.pdf',
+  },
+];
+
+const R = 92;                       // rayon de l'anneau
+const C = 2 * Math.PI * R;          // circonférence
+const lysTransform = (size: number) =>
+  `translate(0 0) rotate(45) scale(${size / 672}) translate(${-FLEUR_CENTER.x} ${FLEUR_CENTER.y}) scale(1 -1)`;
+---
+
+<section class="constat" id="constat" data-constat aria-labelledby="constat-title">
+  <div class="constat__sketch" aria-hidden="true"></div>
+  <div class="constat__glow" aria-hidden="true"></div>
+
+  <div class="container constat__inner">
+    <header class="constat__head">
+      <p class="constat__chapter" aria-hidden="true">
+        <span class="constat__rule"></span>
+        <span class="constat__numeral">II</span>
+        <span class="constat__rule"></span>
+      </p>
+      <p class="eyebrow">Le constat</p>
+      <h2 id="constat-title" class="constat__title">
+        <span class="constat__line">Les attaques ne visent plus</span>
+        <span class="constat__line">seulement les grands groupes.</span>
+      </h2>
+      <p class="lede constat__lede">
+        Trois chiffres récents, issus d’études publiques, suffisent à situer l’enjeu : la cible, la vitesse, l’illusion.
+      </p>
+    </header>
+
+    <ol class="constat__grid">
+      {stats.map((s, i) => (
+        <li class="stat" data-stat data-tilt="2" data-value={s.value} data-arc-frac={s.arc ?? s.value / 100}>
+          {i > 0 && (
+            <span class="stat__sep" aria-hidden="true">
+              <svg viewBox="-420 -420 840 840"><g transform={lysTransform(300)}><path d={FLEUR_DE_LYS} fill="currentColor" /></g></svg>
+            </span>
+          )}
+          <div class="stat__ring" aria-hidden="true">
+            <svg viewBox="0 0 220 220">
+              <circle class="stat__track" cx="110" cy="110" r={R} />
+              <circle class="stat__arc" cx="110" cy="110" r={R} stroke-dasharray={C} stroke-dashoffset={C} data-arc data-circ={C} />
+              <circle class="stat__dot" cx="110" cy={110 - R} r="4" data-dot />
+            </svg>
+            <p class="stat__value">
+              <span class="stat__num" data-num>0</span><span class={`stat__suffix ${s.suffix === '%' ? '' : 'stat__suffix--unit'}`}>{s.suffix}</span>
+            </p>
+          </div>
+          <p class="stat__label">{s.label}</p>
+          <p class="stat__detail">{s.detail}</p>
+          <a class="stat__source" href={s.href} target="_blank" rel="noopener">
+            <span>Source</span> {s.source}
+          </a>
+        </li>
+      ))}
+    </ol>
+
+    <p class="constat__close">
+      <span class="constat__close-line">Ce n’est pas une question de taille.</span>
+      <span class="constat__close-line subtitle-italic">C’est une question de clarté.</span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .constat {
+    position: relative;
+    padding: clamp(6rem, 14vh, 11rem) 0 clamp(5rem, 12vh, 9rem);
+    background: var(--navy);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .constat__sketch {
+    position: absolute; inset: 0;
+    background: url('/brand/pattern-sketch.png?v=4') center / clamp(260px, 22vw, 360px) repeat;
+    opacity: 0.045;
+    z-index: -1;
+  }
+  /* raccord avec la lumière du portail : halo or qui s'éteint vers le bas */
+  .constat__glow {
+    position: absolute; inset: 0 0 auto 0; height: 60vh;
+    background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba(226, 201, 139, 0.22), rgba(226, 201, 139, 0) 70%);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .constat__inner { display: flex; flex-direction: column; align-items: center; gap: clamp(3rem, 7vh, 5rem); }
+
+  .constat__head {
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.2rem;
+    max-width: 900px;
+  }
+  .constat__chapter {
+    display: inline-flex; align-items: center; gap: 1.2rem; margin: 0 0 0.4rem;
+    color: var(--gold);
+  }
+  .constat__rule { width: clamp(40px, 8vw, 110px); height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+  .constat__chapter .constat__rule:last-child { background: linear-gradient(90deg, var(--gold), transparent); }
+  .constat__numeral {
+    font-family: var(--font-inscription);
+    font-size: clamp(1.4rem, 2.2vw, 2rem);
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    padding-left: 0.2em;
+  }
+  .constat__title { line-height: 1.08; }
+  .constat__line { display: block; }
+  .constat__lede { color: var(--ivory-70); max-width: 46ch; }
+
+  .constat__grid {
+    list-style: none; margin: 0; padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.5rem, 3vw, 3rem);
+    width: 100%;
+  }
+  .stat {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    gap: 1rem;
+    padding: 1rem clamp(0.5rem, 2vw, 2rem);
+  }
+  .stat__sep {
+    position: absolute; left: calc(-1 * clamp(0.75rem, 1.5vw, 1.5rem)); top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--gold-hairline) 20%, var(--gold-hairline) 80%, transparent);
+    color: var(--gold);
+  }
+  .stat__sep svg {
+    position: absolute; top: 50%; left: 50%;
+    width: 34px; height: 34px;
+    transform: translate(-50%, -50%);
+    background: var(--navy);
+    padding: 4px;
+  }
+
+  .stat__ring { position: relative; width: clamp(170px, 16vw, 230px); aspect-ratio: 1; }
+  .stat__ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .stat__track { fill: none; stroke: var(--gold-faint); stroke-width: 1.5; }
+  .stat__arc { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; }
+  .stat__dot { fill: var(--gold-light); opacity: 0; }
+  .stat__value {
+    position: absolute; inset: 0;
+    display: flex; align-items: baseline; justify-content: center;
+    padding-top: 0.6rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variant-numeric: lining-nums tabular-nums;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+  .stat__value { align-items: center; }
+  .stat__num { font-size: clamp(3.2rem, 4.6vw, 5rem); letter-spacing: -0.02em; }
+  .stat__suffix { font-size: clamp(1.4rem, 2vw, 2.1rem); margin-left: 0.15em; align-self: flex-start; margin-top: 0.9em; color: var(--gold); }
+  .stat__suffix--unit { font-family: var(--font-display); font-style: italic; }
+
+  .stat__label {
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
+    font-weight: 500;
+    line-height: 1.4;
+    max-width: 28ch;
+    color: var(--ivory);
+  }
+  .stat__detail { color: var(--ivory-70); max-width: 30ch; font-size: 1rem; line-height: 1.45; }
+  .stat__source {
+    margin-top: 0.4rem;
+    font-family: var(--font-inscription);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(206, 171, 112, 0.8);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    max-width: 30ch;
+    line-height: 1.6;
+  }
+  .stat__source span { color: var(--ivory-50); margin-right: 0.3em; }
+  .stat__source:hover { color: var(--gold-light); border-bottom-color: var(--gold-hairline); }
+
+  .constat__close {
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.3rem;
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.4rem);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .constat__close .subtitle-italic { font-weight: 500; }
+
+  @media (max-width: 600px) {
+    .constat__line { display: inline; }
+  }
+  @media (max-width: 860px) {
+    .constat__grid { grid-template-columns: 1fr; gap: 2.5rem; max-width: 460px; }
+    .stat__sep { left: 0; right: 0; top: calc(-1.25rem); bottom: auto; width: auto; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-hairline) 20%, var(--gold-hairline) 80%, transparent); }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  const section = document.querySelector<HTMLElement>('[data-constat]');
+  if (section) {
+    const reduced = document.documentElement.classList.contains('motion-reduced');
+    const stats = Array.from(section.querySelectorAll<HTMLElement>('[data-stat]'));
+
+    const finish = (el: HTMLElement) => {
+      const v = Number(el.dataset.value);
+      const frac = Number(el.dataset.arcFrac);
+      const arc = el.querySelector<SVGCircleElement>('[data-arc]')!;
+      const circ = Number(arc.dataset.circ);
+      arc.style.strokeDashoffset = String(circ * (1 - frac));
+      el.querySelector<HTMLElement>('[data-num]')!.textContent = String(v);
+      const dot = el.querySelector<SVGCircleElement>('[data-dot]')!;
+      dot.style.opacity = '1';
+      dot.setAttribute('transform', `rotate(${frac * 360} 110 110)`);
+    };
+
+    if (reduced) {
+      stats.forEach(finish);
+    } else {
+      // entrée du titre
+      gsap.from(section.querySelectorAll('.constat__head > *'), {
+        y: 30, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power2.out',
+        scrollTrigger: { trigger: section, start: 'top 72%' },
+      });
+      // chaque chiffre : anneau + compteur + textes
+      stats.forEach((el, i) => {
+        const v = Number(el.dataset.value);
+        const frac = Number(el.dataset.arcFrac);
+        const arc = el.querySelector<SVGCircleElement>('[data-arc]')!;
+        const circ = Number(arc.dataset.circ);
+        const num = el.querySelector<HTMLElement>('[data-num]')!;
+        const dot = el.querySelector<SVGCircleElement>('[data-dot]')!;
+        const counter = { n: 0 };
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: el, start: 'top 78%', once: true },
+          delay: i * 0.18,
+          defaults: { ease: 'power3.out' },
+        });
+        tl.from(el.querySelector('.stat__ring'), { scale: 0.85, opacity: 0, duration: 0.8 }, 0);
+        tl.to(arc, { strokeDashoffset: circ * (1 - frac), duration: 1.6, ease: 'power2.inOut' }, 0.15);
+        tl.to(counter, {
+          n: v, duration: 1.6, ease: 'power2.inOut',
+          onUpdate: () => { num.textContent = String(Math.round(counter.n)); },
+        }, 0.15);
+        tl.to(dot, {
+          opacity: 1, duration: 0.3,
+          onStart: () => dot.setAttribute('transform', `rotate(${frac * 360} 110 110)`),
+        }, 1.6);
+        tl.from(el.querySelectorAll('.stat__label, .stat__detail, .stat__source'), { y: 18, opacity: 0, duration: 0.7, stagger: 0.1 }, 0.5);
+      });
+      gsap.from(section.querySelectorAll('.constat__close-line'), {
+        y: 24, opacity: 0, duration: 0.9, stagger: 0.2, ease: 'power2.out',
+        scrollTrigger: { trigger: section.querySelector('.constat__close'), start: 'top 85%' },
+      });
+    }
+  }
+</script>

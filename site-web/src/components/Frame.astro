@@ -1,0 +1,72 @@
+---
+/* Cadre fixe autour de la fenêtre, fidèle aux slides Cladéys :
+   filet or extérieur + filet fin intérieur, volutes d'acanthe dans les quatre coins
+   (ornements vectorisés depuis la police des documents), fleur de lys au milieu des grands côtés. */
+import Ornament from './Ornament.astro';
+import { FLEUR_DE_LYS, FLEUR_CENTER } from '../assets/ornaments';
+---
+<div class="frame" aria-hidden="true">
+  <div class="frame__rule frame__rule--outer"></div>
+  <div class="frame__rule frame__rule--inner"></div>
+
+  <span class="frame__corner frame__corner--tl"><Ornament corner="tl" /></span>
+  <span class="frame__corner frame__corner--tr"><Ornament corner="tr" /></span>
+  <span class="frame__corner frame__corner--br"><Ornament corner="br" /></span>
+  <span class="frame__corner frame__corner--bl"><Ornament corner="bl" /></span>
+
+  <!-- fleur de lys (police d'ornements Cladéys) au centre du bord haut et du bord bas -->
+  <svg class="frame__lys frame__lys--top" viewBox="-420 -420 840 840">
+    <g transform="rotate(45)"><g transform={`translate(${-FLEUR_CENTER.x} ${FLEUR_CENTER.y}) scale(1 -1)`}><path d={FLEUR_DE_LYS} fill="currentColor" /></g></g>
+  </svg>
+  <svg class="frame__lys frame__lys--bottom" viewBox="-420 -420 840 840">
+    <g transform="rotate(45)"><g transform={`translate(${-FLEUR_CENTER.x} ${FLEUR_CENTER.y}) scale(1 -1)`}><path d={FLEUR_DE_LYS} fill="currentColor" /></g></g>
+  </svg>
+</div>
+
+<style>
+  .frame {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    color: var(--gold);
+    --o: var(--frame-inset);          /* filet extérieur */
+    --i: var(--frame-inset-2);        /* filet intérieur */
+    --c: clamp(40px, 3.6vw, 64px);     /* taille des volutes de coin (réduites à la demande de Dany) */
+  }
+  .frame__rule { position: absolute; border: 1px solid var(--gold); }
+  .frame__rule--outer { inset: var(--o); border-width: 1.5px; opacity: 0.95; }
+  .frame__rule--inner { inset: var(--i); border-color: var(--gold-hairline); }
+
+  .frame__corner {
+    position: absolute;
+    display: block;
+    width: var(--c);
+    height: var(--c);
+    /* la volute déborde légèrement vers l'extérieur du filet, comme sur les slides */
+    --off: calc(var(--o) - var(--c) * 0.12);
+    filter: drop-shadow(0 0 6px rgba(206, 171, 112, 0.25));
+  }
+  .frame__corner :global(svg) { width: 100%; height: 100%; display: block; }
+  .frame__corner--tl { top: var(--off); left: var(--off); }
+  .frame__corner--tr { top: var(--off); right: var(--off); }
+  .frame__corner--br { bottom: var(--off); right: var(--off); }
+  .frame__corner--bl { bottom: var(--off); left: var(--off); }
+
+  .frame__lys {
+    position: absolute;
+    left: 50%;
+    width: clamp(40px, 4vw, 62px);
+    height: clamp(40px, 4vw, 62px);
+    transform: translateX(-50%);
+    opacity: 0.95;
+  }
+  .frame__lys--top { top: calc(var(--o) - clamp(20px, 2vw, 31px)); }
+  .frame__lys--bottom { bottom: calc(var(--o) - clamp(20px, 2vw, 31px)); transform: translateX(-50%) rotate(180deg); }
+
+  @media (max-width: 720px) {
+    .frame { --c: 34px; }
+    .frame__rule--inner { display: none; }
+    .frame__lys { display: none; }
+  }
+</style>

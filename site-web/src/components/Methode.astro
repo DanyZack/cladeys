@@ -1,0 +1,292 @@
+---
+/* Section 5 — Comment nous travaillons (fond IVOIRE, miroir de la section 3).
+   À gauche : la méthode en quatre temps, reliés par un filet or qui se trace au scroll.
+   À droite : les engagements, puis un court topo d'expérience.
+   En pied : la carte du blog TuneInCloud, avec ses derniers titres (flux RSS lu au build, repli statique). */
+import { FLEUR_DE_LYS, FLEUR_CENTER } from '../assets/ornaments';
+import { getPosts } from '../lib/tuneincloud';
+
+const pillars = [
+  { n: '01', title: 'Un haut niveau d’expertise', text: 'Une expérience approfondie des environnements Microsoft les plus exigeants, acquise auprès d’organisations de toutes tailles.' },
+  { n: '02', title: 'La qualité, pas le temps passé', text: 'Notre objectif commun : aller vite et à l’essentiel. Nous apportons de l’efficacité et des résultats, pas des journées facturées.' },
+  { n: '03', title: 'Un complément à vos équipes', text: 'Nous ne remplaçons ni votre informatique interne ni votre partenaire. Nous apportons un regard objectif et l’expertise qui leur manque, à leurs côtés.' },
+  { n: '04', title: 'Des référentiels reconnus', text: 'Nos méthodes s’appuient sur des standards qui ont prouvé leur efficacité et servent dans tous les projets de réduction du risque cyber : CISA, CIS, ISO, ANSSI.' },
+];
+
+const commitments = [
+  { title: 'Au forfait', text: 'Un prix connu à l’avance et un engagement de résultat, pas un engagement de moyens.' },
+  { title: 'Aucun accès résiduel', text: 'À chaque mission, nous demandons un niveau d’autorisation précis sur votre environnement, nous mettons en place les conditions pour travailler sereinement, et nos droits sont supprimés automatiquement à l’issue du travail.' },
+  { title: 'Indépendants', text: 'Cladéys ne travaille pas pour l’éditeur. Nous avons acquis une longue expérience de ses solutions ; notre seul intérêt est d’accompagner nos clients.' },
+  { title: 'Transparents', text: 'Nous vous promettons de réduire considérablement votre risque cyber et de vous accompagner proprement sur l’IA et les usages. Nous ne promettons pas une protection à 100 % : elle n’existe pas. La sécurité est une réduction continue du risque, pas un état.' },
+];
+
+const posts = await getPosts();
+
+const lysTransform = (size: number) =>
+  `rotate(45) scale(${size / 672}) translate(${-FLEUR_CENTER.x} ${FLEUR_CENTER.y}) scale(1 -1)`;
+---
+
+<section class="methode" id="methode" data-methode data-theme="light" aria-labelledby="methode-title">
+  <div class="methode__sketch" aria-hidden="true"></div>
+
+  <div class="container methode__inner">
+    <header class="methode__head">
+      <p class="methode__chapter" aria-hidden="true">
+        <span class="methode__rule"></span>
+        <span class="methode__numeral">V</span>
+        <span class="methode__rule"></span>
+      </p>
+      <p class="eyebrow methode__eyebrow">Comment nous travaillons</p>
+      <h2 id="methode-title" class="methode__title">Vite, et à l’essentiel.</h2>
+      <p class="lede methode__lede">Quatre piliers, quatre engagements. Rien de superflu.</p>
+    </header>
+
+    <div class="methode__grid">
+      <!-- les quatre piliers -->
+      <div class="pillars">
+      <p class="eyebrow methode__eyebrow aside__eyebrow">Nos piliers</p>
+      <ol class="path" data-path>
+        <span class="path__track" aria-hidden="true"></span>
+        <span class="path__line" aria-hidden="true" data-pathline></span>
+        {pillars.map((s) => (
+          <li class="path__step" data-step>
+            <span class="path__num">{s.n}</span>
+            <div class="path__body">
+              <h3 class="path__title">{s.title}</h3>
+              <p class="path__text">{s.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      </div>
+
+      <!-- engagements + expérience -->
+      <div class="aside">
+        <p class="eyebrow methode__eyebrow aside__eyebrow">Nos engagements</p>
+        <ul class="commit" data-commit>
+          {commitments.map((c) => (
+            <li class="commit__item">
+              <svg class="commit__seal" viewBox="-420 -420 840 840" aria-hidden="true"><g transform={lysTransform(420)}><path d={FLEUR_DE_LYS} fill="currentColor" /></g></svg>
+              <div>
+                <h3 class="commit__title">{c.title}</h3>
+                <p class="commit__text">{c.text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <div class="xp" data-xp data-tilt="2">
+          <p class="eyebrow methode__eyebrow aside__eyebrow">L’expérience</p>
+          <p class="xp__text">
+            <strong>Onze ans</strong> sur l’écosystème Microsoft, <strong>plus de quarante entreprises</strong> accompagnées,
+            de la PME au grand groupe, dans des secteurs variés. Cladéys ne propose pas une offre spéciale PME :
+            c’est une société créée pour accompagner les PME.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- le blog -->
+    <a class="blog" href="https://tuneincloud.com/" target="_blank" rel="noopener" data-blog data-tilt="2">
+      <span class="blog__frame" aria-hidden="true"></span>
+      <div class="blog__mark" data-blog-mark>
+        <img src="/brand/tuneincloud-mark.png" alt="" width="260" height="184" loading="lazy" />
+      </div>
+      <div class="blog__body">
+        <p class="blog__kicker">Le blog d’expertise</p>
+        <p class="blog__name">
+          TuneIn<span>Cloud</span>
+          <svg class="blog__stroke" viewBox="0 0 420 16" preserveAspectRatio="none" aria-hidden="true">
+            <path data-blog-stroke d="M4 9 C 80 3, 160 13, 240 7 S 380 5, 416 9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+          </svg>
+        </p>
+        <p class="blog__desc">Intune, Entra, Defender, Purview, Microsoft 365 : une veille suivie, en français, par un expert reconnu.</p>
+        <ul class="blog__posts" aria-label="Au sommaire">
+          {posts.map((p) => (
+            <li><span class="blog__dot"></span><span class="blog__post">{p.title}</span></li>
+          ))}
+        </ul>
+        <span class="btn btn--navy blog__cta">Lire le blog</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="signature-band" aria-hidden="true"><i></i><i></i><i></i></div>
+</section>
+
+<style>
+  .methode {
+    --ink: var(--navy-deep);
+    --ink-2: var(--text-on-light-2);
+    --accent: var(--gold-deep);
+    position: relative;
+    padding: clamp(6rem, 14vh, 11rem) 0 clamp(7rem, 16vh, 12rem);
+    background: var(--ivory);
+    color: var(--ink);
+    overflow: hidden;
+    isolation: isolate;
+    border-top: 1px solid var(--gold);
+  }
+  .methode__sketch {
+    position: absolute; inset: 0;
+    background: url('/brand/pattern-sketch.png?v=4') center / clamp(260px, 22vw, 360px) repeat;
+    filter: invert(1);
+    opacity: 0.045;
+    z-index: -1;
+  }
+  .methode__inner { display: flex; flex-direction: column; align-items: center; gap: clamp(3rem, 8vh, 5.5rem); }
+  .methode__head { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.2rem; max-width: 900px; }
+  .methode__chapter { display: inline-flex; align-items: center; gap: 1.2rem; margin: 0 0 0.4rem; color: var(--accent); }
+  .methode__rule { width: clamp(40px, 8vw, 110px); height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
+  .methode__chapter .methode__rule:last-child { background: linear-gradient(90deg, var(--accent), transparent); }
+  .methode__numeral { font-family: var(--font-inscription); font-size: clamp(1.4rem, 2.2vw, 2rem); font-weight: 600; letter-spacing: 0.2em; padding-left: 0.2em; }
+  .methode__eyebrow { color: var(--accent); }
+  .methode__title { color: var(--ink); line-height: 1.1; }
+  .methode__lede { color: var(--ink-2); max-width: 46ch; }
+
+  .methode__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 6vw, 6rem);
+    width: 100%;
+    align-items: start;
+  }
+
+  /* ── méthode en quatre temps ── */
+  .path { position: relative; list-style: none; margin: 0; padding: 0 0 0 4.4rem; display: flex; flex-direction: column; gap: clamp(1.8rem, 4vh, 2.8rem); }
+  .path__track, .path__line { position: absolute; left: 1.45rem; top: 1rem; bottom: 1rem; width: 1px; }
+  .path__track { background: rgba(169, 136, 79, 0.28); }
+  .path__line { background: linear-gradient(to bottom, var(--gold-deep), var(--gold)); transform-origin: top; transform: scaleY(0); }
+  .path__step { position: relative; display: flex; flex-direction: column; gap: 0.4rem; }
+  .path__num {
+    position: absolute; left: -4.4rem; top: -0.1rem;
+    width: 2.9rem; height: 2.9rem;
+    display: grid; place-items: center;
+    border-radius: 50%;
+    background: var(--ivory);
+    border: 1px solid var(--gold);
+    box-shadow: 0 0 0 4px var(--ivory);
+    font-family: var(--font-inscription);
+    font-weight: 700; font-size: 0.95rem; letter-spacing: 0.08em;
+    color: var(--navy-deep);
+  }
+  .path__title { font-family: var(--font-display); font-weight: 650; font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.8rem); line-height: 1.2; color: var(--ink); }
+  .path__text { color: var(--text-on-light); line-height: 1.55; max-width: 48ch; }
+
+  /* ── engagements ── */
+  .aside { display: flex; flex-direction: column; gap: 2.2rem; }
+  .aside__eyebrow { margin-bottom: 0.2rem; }
+  .commit { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.1rem; }
+  .commit__item { display: grid; grid-template-columns: 30px 1fr; gap: 0.9rem; align-items: start; }
+  .commit__seal { width: 30px; height: 30px; color: var(--gold-deep); margin-top: 0.05rem; }
+  .commit__title { font-family: var(--font-display); font-weight: 650; font-size: 1.15rem; color: var(--ink); margin-bottom: 0.15rem; }
+  .commit__text { color: var(--text-on-light); line-height: 1.5; }
+
+  .xp { padding: 1.4rem 1.6rem; border: 1px solid var(--gold); background: rgba(255, 255, 255, 0.35); position: relative; }
+  .xp::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(169, 136, 79, 0.35); pointer-events: none; }
+  .xp__text { color: var(--text-on-light); line-height: 1.6; }
+  .xp__text strong { color: var(--navy-deep); font-weight: 650; }
+
+  /* ── blog : plaque ivoire encadrée, logo à gauche ── */
+  .blog {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1.6fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: center;
+    width: min(100%, 920px);
+    padding: clamp(1.6rem, 3.5vw, 3rem) clamp(1.4rem, 4vw, 3.4rem);
+    background: rgba(255, 255, 255, 0.38);
+    border: 1px solid var(--gold);
+    text-decoration: none; color: var(--ink);
+    transition: background-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+  }
+  .blog__frame { position: absolute; inset: 6px; border: 1px solid rgba(169, 136, 79, 0.4); pointer-events: none; }
+  .blog:hover { background: rgba(255, 255, 255, 0.6); box-shadow: 0 24px 50px rgba(38, 51, 87, 0.16); --ty: -3px; }
+  .blog__mark { display: grid; place-items: center; }
+  .blog__mark img { width: min(100%, 260px); height: auto; filter: drop-shadow(0 10px 20px rgba(38, 51, 87, 0.18)); }
+  .blog__body { display: flex; flex-direction: column; gap: 0.7rem; align-items: flex-start; }
+  .blog__kicker { font-family: var(--font-inscription); font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); }
+  .blog__name { position: relative; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.9rem, 1.4rem + 1.8vw, 3rem); line-height: 1; color: var(--navy-deep); padding-bottom: 0.45rem; }
+  .blog__name span { color: var(--gold-deep); font-style: italic; font-weight: 500; }
+  .blog__stroke { position: absolute; left: 0; bottom: 0; width: 100%; height: 10px; color: var(--gold); }
+  .blog__desc { color: var(--text-on-light); max-width: 52ch; line-height: 1.5; }
+  .blog__posts { list-style: none; margin: 0.2rem 0 0; padding: 0.8rem 0 0; border-top: 1px solid rgba(169, 136, 79, 0.35); display: flex; flex-direction: column; gap: 0.45rem; width: 100%; }
+  .blog__posts li { display: flex; align-items: baseline; gap: 0.7rem; color: var(--ink); }
+  .blog__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-deep); flex: none; transform: translateY(-2px); }
+  .blog__post { font-size: 1rem; line-height: 1.4; }
+  .blog__cta { margin-top: 0.6rem; }
+  .blog:hover .blog__cta { --btn-bg: var(--navy-deep); --btn-fg: var(--ivory); }
+
+  .signature-band {
+    position: absolute; left: -4vw; bottom: clamp(26px, 3vw, 44px);
+    width: 62vw; height: clamp(16px, 2.2vw, 34px);
+    transform: skewX(-32deg);
+    display: flex;
+    -webkit-mask-image: linear-gradient(90deg, #000 55%, transparent 100%);
+    mask-image: linear-gradient(90deg, #000 55%, transparent 100%);
+    pointer-events: none;
+  }
+  .signature-band i { flex: 1; display: block; }
+  .signature-band i:nth-child(1) { background: var(--navy); }
+  .signature-band i:nth-child(2) { background: var(--bordeaux); }
+  .signature-band i:nth-child(3) { background: var(--gold); }
+
+  @media (max-width: 900px) {
+    .methode__grid { grid-template-columns: 1fr; }
+    .blog { grid-template-columns: 1fr; text-align: center; }
+    .blog__body { align-items: center; }
+    .blog__posts li { text-align: left; }
+    .blog__mark img { width: min(60%, 220px); }
+    .signature-band { width: 90vw; }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
+  gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin);
+
+  const section = document.querySelector<HTMLElement>('[data-methode]');
+  if (section) {
+    const reduced = document.documentElement.classList.contains('motion-reduced');
+    const path = section.querySelector<HTMLElement>('[data-path]')!;
+    const line = section.querySelector<HTMLElement>('[data-pathline]')!;
+    if (reduced) {
+      line.style.transform = 'scaleY(1)';
+    } else {
+      gsap.from(section.querySelectorAll('.methode__head > *'), {
+        y: 30, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power2.out',
+        scrollTrigger: { trigger: section, start: 'top 72%' },
+      });
+      gsap.to(line, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: path, start: 'top 72%', end: 'bottom 60%', scrub: 0.4 } });
+      section.querySelectorAll<HTMLElement>('[data-step]').forEach((step) => {
+        gsap.from(step.querySelectorAll('.path__num, .path__body > *'), {
+          x: -18, opacity: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out',
+          scrollTrigger: { trigger: step, start: 'top 80%', once: true },
+        });
+      });
+      gsap.from(section.querySelectorAll('[data-commit] > li'), {
+        y: 18, opacity: 0, duration: 0.7, stagger: 0.12, ease: 'power2.out',
+        scrollTrigger: { trigger: section.querySelector('[data-commit]'), start: 'top 78%', once: true },
+      });
+      gsap.from(section.querySelector('[data-xp]'), {
+        y: 18, opacity: 0, duration: 0.8, ease: 'power2.out',
+        scrollTrigger: { trigger: section.querySelector('[data-xp]'), start: 'top 82%', once: true },
+      });
+      // le blog : le logo arrive, le nom s'écrit, le trait de crayon se trace sous le nom
+      const blog = section.querySelector<HTMLElement>('[data-blog]')!;
+      const tl = gsap.timeline({ scrollTrigger: { trigger: blog, start: 'top 80%', once: true }, defaults: { ease: 'power3.out' } });
+      tl.from(blog, { opacity: 0, y: 30, duration: 0.8 }, 0);
+      tl.from(blog.querySelector('[data-blog-mark]'), { x: -30, rotate: -6, opacity: 0, duration: 0.9, ease: 'back.out(1.4)' }, 0.2);
+      tl.from(blog.querySelectorAll('.blog__body > *:not(.blog__posts)'), { y: 14, opacity: 0, duration: 0.6, stagger: 0.1 }, 0.4);
+      tl.fromTo(blog.querySelector('[data-blog-stroke]'), { drawSVG: '0%' }, { drawSVG: '100%', duration: 0.9, ease: 'power2.inOut' }, 0.7);
+      tl.from(blog.querySelectorAll('.blog__posts li'), { x: -16, opacity: 0, duration: 0.5, stagger: 0.18 }, 0.9);
+      gsap.from(section.querySelector('.signature-band'), {
+        xPercent: -30, opacity: 0, duration: 1.1, ease: 'power3.out',
+        scrollTrigger: { trigger: section.querySelector('.signature-band'), start: 'top 95%' },
+      });
+    }
+  }
+</script>

@@ -1,0 +1,210 @@
+---
+/* Section 6 — Contact, puis pied de page.
+   Contact : fond navy profond, une grande arche or (la porte du hero, refermée sur l'appel),
+   le pictogramme Cladéys, le bouton Bookings, l'email, le téléphone s'il est fourni, la zone.
+   Pied de page : logo, navigation, TuneInCloud, ligne de mentions légales, copyright. */
+import LogoMark from './LogoMark.astro';
+import { FLEUR_DE_LYS, FLEUR_CENTER } from '../assets/ornaments';
+
+const BOOKING = 'https://bookings.cloud.microsoft/book/RendezvousdinformationCladys@cladeys.fr/?ismsaljsauthenabled';
+const EMAIL = 'dpolonio@cladeys.fr';
+const PHONE = '';                      // à fournir par Dany, affiché seulement s'il est renseigné
+const LEGAL = {
+  company: 'Cladéys SAS',
+  siren: 'SIREN à compléter',
+  seat: 'siège social à compléter',
+  director: 'directeur de la publication à compléter',
+  host: 'Hébergement : Netlify, Inc., San Francisco (États-Unis)',
+};
+const year = new Date().getFullYear();
+const lysTransform = (size: number) =>
+  `rotate(45) scale(${size / 672}) translate(${-FLEUR_CENTER.x} ${FLEUR_CENTER.y}) scale(1 -1)`;
+---
+
+<section class="contact" id="contact" data-contact aria-labelledby="contact-title">
+  <div class="contact__sketch" aria-hidden="true"></div>
+  <div class="contact__glow" aria-hidden="true"></div>
+
+  <div class="container contact__inner">
+    <div class="contact__arch" aria-hidden="true" data-arch>
+      <svg viewBox="0 0 520 620" fill="none" stroke="#ceab70" stroke-linecap="round" stroke-linejoin="round">
+        <path data-draw d="M 40 600 V 300 A 220 220 0 0 1 480 300 V 600" stroke-width="2.4" />
+        <path data-draw d="M 70 600 V 300 A 190 190 0 0 1 450 300 V 600" stroke-width="1.2" opacity="0.8" />
+        <path data-draw d="M 10 600 V 300 A 250 250 0 0 1 510 300 V 600" stroke-width="1.6" />
+        <path data-draw d="M 226 56 H 294 L 282 120 H 238 Z" stroke-width="1.8" fill="rgba(206,171,112,0.25)" />
+        <path data-draw d="M 0 600 H 520 M 0 612 H 520" stroke-width="1.4" />
+      </svg>
+      <div class="contact__mark"><LogoMark class="contact__mark-svg" /></div>
+      <div class="contact__light"></div>
+    </div>
+
+    <div class="contact__body">
+      <p class="contact__chapter" aria-hidden="true">
+        <span class="contact__rule"></span>
+        <span class="contact__numeral">VI</span>
+        <span class="contact__rule"></span>
+      </p>
+      <p class="eyebrow">Contact</p>
+      <h2 id="contact-title" class="contact__title">Parlons-en.</h2>
+      <p class="lede contact__lede">
+        Un premier échange, sans engagement, pour comprendre votre situation et vous dire
+        franchement par où commencer.
+      </p>
+      <div class="contact__actions">
+        <a class="btn btn--solid contact__cta" href={BOOKING} target="_blank" rel="noopener">Prendre rendez-vous</a>
+        <a class="contact__line" href={`mailto:${EMAIL}`}>
+          <span class="contact__line-label">Email</span>
+          <span class="contact__line-value">{EMAIL}</span>
+        </a>
+        {PHONE && (
+          <a class="contact__line" href={`tel:${PHONE.replace(/\s/g, '')}`}>
+            <span class="contact__line-label">Téléphone</span>
+            <span class="contact__line-value">{PHONE}</span>
+          </a>
+        )}
+      </div>
+      <p class="contact__where">
+        <svg class="contact__lys" viewBox="-420 -420 840 840" aria-hidden="true"><g transform={lysTransform(420)}><path d={FLEUR_DE_LYS} fill="currentColor" /></g></svg>
+        Bordeaux et la Nouvelle-Aquitaine sur place. Toute la France à distance.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer" data-footer>
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <LogoMark class="footer__mark" />
+      <span class="footer__word">Cla<span>d</span>éys</span>
+    </div>
+    <nav class="footer__nav" aria-label="Pied de page">
+      <a href="#offres">Offres</a>
+      <a href="#methode">Méthode</a>
+      <a href="#contact">Contact</a>
+      <a href="https://tuneincloud.com/" target="_blank" rel="noopener">TuneInCloud</a>
+    </nav>
+    <p class="footer__legal">
+      <strong>Mentions légales</strong> · {LEGAL.company} · {LEGAL.siren} · {LEGAL.seat} · {LEGAL.director} · {LEGAL.host} ·
+      Contact : <a href={`mailto:${EMAIL}`}>{EMAIL}</a> · Ce site ne dépose aucun cookie de suivi.
+    </p>
+    <p class="footer__copy">© {year} Cladéys. Voir clair, agir juste, viser loin.</p>
+  </div>
+</footer>
+
+<style is:global>
+  .contact__mark-svg { width: 100%; height: auto; color: var(--ivory); }
+  .footer__mark { width: 44px; height: auto; color: var(--ivory); }
+</style>
+
+<style>
+  .contact {
+    position: relative;
+    padding: clamp(6rem, 14vh, 11rem) 0 clamp(5rem, 12vh, 9rem);
+    background: var(--navy-night);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .contact__sketch {
+    position: absolute; inset: 0;
+    background: url('/brand/pattern-sketch.png?v=4') center / clamp(260px, 22vw, 360px) repeat;
+    opacity: 0.045;
+    z-index: -1;
+  }
+  .contact__glow {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 40% 50% at 28% 60%, rgba(226, 201, 139, 0.16), transparent 70%);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .contact__inner {
+    display: grid;
+    grid-template-columns: minmax(240px, 0.9fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: center;
+  }
+
+  /* ── l'arche ── */
+  .contact__arch { position: relative; width: min(100%, 420px); margin-inline: auto; aspect-ratio: 520 / 620; }
+  .contact__arch svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .contact__light {
+    position: absolute; left: 50%; top: 58%;
+    width: 46%; aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 246, 224, 0.9) 0%, rgba(226, 201, 139, 0.55) 35%, rgba(206, 171, 112, 0) 70%);
+    filter: blur(6px);
+    z-index: -1;
+  }
+  .contact__mark { position: absolute; left: 50%; top: 56%; width: 34%; transform: translate(-50%, -50%); }
+
+  /* ── texte ── */
+  .contact__body { display: flex; flex-direction: column; align-items: flex-start; gap: 1.2rem; }
+  .contact__chapter { display: inline-flex; align-items: center; gap: 1.2rem; margin: 0 0 0.2rem; color: var(--gold); }
+  .contact__rule { width: clamp(40px, 6vw, 90px); height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+  .contact__chapter .contact__rule:last-child { background: linear-gradient(90deg, var(--gold), transparent); }
+  .contact__numeral { font-family: var(--font-inscription); font-size: clamp(1.4rem, 2.2vw, 2rem); font-weight: 600; letter-spacing: 0.2em; padding-left: 0.2em; }
+  .contact__title { font-size: clamp(2.8rem, 2rem + 3.5vw, 5.5rem); line-height: 1; }
+  .contact__lede { color: var(--ivory-70); max-width: 44ch; }
+  .contact__actions { display: flex; flex-direction: column; align-items: flex-start; gap: 1.1rem; margin-top: 0.8rem; }
+  .contact__cta { min-height: 3.6rem; padding: 1rem 2.2rem; font-size: 0.95rem; }
+  .contact__line { display: flex; flex-direction: column; gap: 0.15rem; text-decoration: none; color: var(--ivory); }
+  .contact__line-label { font-family: var(--font-inscription); font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); }
+  .contact__line-value {
+    font-family: var(--font-display); font-size: clamp(1.25rem, 1rem + 1vw, 1.8rem); font-weight: 600;
+    border-bottom: 1px solid var(--gold-hairline); padding-bottom: 0.15rem;
+    transition: border-color 0.3s ease, color 0.3s ease;
+  }
+  .contact__line:hover .contact__line-value { color: var(--gold-light); border-bottom-color: var(--gold); }
+  .contact__where { display: flex; align-items: center; gap: 0.7rem; margin-top: 1rem; color: var(--ivory-70); }
+  .contact__lys { width: 22px; height: 22px; color: var(--gold); flex: none; }
+
+  /* ── pied de page ── */
+  .footer {
+    background: var(--navy-ink);
+    border-top: 1px solid var(--gold-hairline);
+    padding: clamp(2.5rem, 6vh, 4rem) 0 calc(var(--frame-inset-2) + 2.6rem);
+  }
+  .footer__inner { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.4rem; }
+  .footer__brand { display: inline-flex; align-items: center; gap: 0.8rem; color: var(--ivory); }
+  .footer__word { font-family: var(--font-inscription); font-weight: 700; font-size: 1.15rem; letter-spacing: 0.3em; text-transform: uppercase; padding-left: 0.3em; }
+  .footer__word span { color: var(--gold); }
+  .footer__nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.6rem 2.2rem; }
+  .footer__nav a {
+    font-family: var(--font-inscription); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ivory-70); text-decoration: none; transition: color 0.3s ease;
+  }
+  .footer__nav a:hover { color: var(--gold-light); }
+  .footer__legal { max-width: 88ch; font-size: 0.82rem; line-height: 1.6; color: var(--ivory-50); }
+  .footer__legal strong { color: var(--ivory-70); font-weight: 600; }
+  .footer__legal a { color: var(--ivory-70); text-decoration: none; border-bottom: 1px solid var(--gold-hairline); }
+  .footer__copy { font-family: var(--font-inscription); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ivory-50); }
+
+  @media (max-width: 900px) {
+    .contact__inner { grid-template-columns: 1fr; }
+    .contact__arch { width: min(70%, 320px); }
+    .contact__body { align-items: center; text-align: center; }
+    .contact__actions { align-items: center; }
+    .contact__where { text-align: left; }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
+  gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin);
+
+  const section = document.querySelector<HTMLElement>('[data-contact]');
+  if (section && !document.documentElement.classList.contains('motion-reduced')) {
+    const arch = section.querySelector<HTMLElement>('[data-arch]')!;
+    const tl = gsap.timeline({ scrollTrigger: { trigger: section, start: 'top 70%', once: true }, defaults: { ease: 'power2.out' } });
+    tl.fromTo(arch.querySelectorAll('[data-draw]'), { drawSVG: '0%' }, { drawSVG: '100%', duration: 1.6, stagger: 0.12, ease: 'power2.inOut' }, 0);
+    tl.from(arch.querySelector('.contact__light'), { scale: 0.3, opacity: 0, duration: 1.4 }, 0.5);
+    tl.from(arch.querySelector('.contact__mark'), { y: 24, opacity: 0, duration: 0.9 }, 0.9);
+    tl.from(section.querySelectorAll('.contact__body > *'), { y: 26, opacity: 0, duration: 0.8, stagger: 0.1 }, 0.3);
+    gsap.from(document.querySelectorAll('[data-footer] .footer__inner > *'), {
+      y: 14, opacity: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out',
+      scrollTrigger: { trigger: '[data-footer]', start: 'top 92%', once: true },
+    });
+  }
+</script>

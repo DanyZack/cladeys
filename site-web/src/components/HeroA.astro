@@ -1,0 +1,421 @@
+---
+/* Hero — variante A : galerie classique à la française dessinée en traits or.
+   Arcade de pilastres corinthiens, archivoltes, clefs de voûte en console, corniche à denticules,
+   médaillons dans les écoinçons, voûte à caissons, parquet de Versailles, et au bout un portail
+   monumental (pilastres doublés, fronton, cartouche au pictogramme Cladéys) baigné de lumière.
+   La caméra avance dans la galerie au scroll et franchit le portail. */
+import HeroText from './HeroText.astro';
+import { FLEUR_DE_LYS, FLEUR_CENTER, ORNAMENTS } from '../assets/ornaments';
+
+const W = 1600, H = 900;
+const VPX = 800, VPY = 470;          // point de fuite
+const K = 0.8;                        // ratio de profondeur entre deux travées
+const N = 11;                         // nombre de travées (la dernière = le portail)
+const HALF = 560;                     // demi-largeur de l'ouverture (rayon du plein cintre)
+const IMPOST = 330;                   // naissance de l'arc
+const FLOOR = 880;
+const TOP = IMPOST - HALF;            // sommet de l'intrados
+const L = VPX - HALF, R = VPX + HALF;
+const CORN = TOP - 92;                // corniche
+
+const layerTransform = (i: number) => {
+  const s = Math.pow(K, i);
+  return `translate(${VPX} ${VPY}) scale(${s}) translate(${-VPX} ${-VPY})`;
+};
+
+/* ── Géométrie des éléments (coordonnées de la travée 0, les autres sont des homothéties) ── */
+const arc = (r: number) => `M ${VPX - r} ${IMPOST} A ${r} ${r} 0 0 1 ${VPX + r} ${IMPOST}`;
+const intrados = `M ${L} ${FLOOR} V ${IMPOST} A ${HALF} ${HALF} 0 0 1 ${R} ${IMPOST} V ${FLOOR}`;
+const onArc = (r: number, deg: number) => {
+  const t = (deg * Math.PI) / 180;
+  return { x: VPX + r * Math.cos(t), y: IMPOST - r * Math.sin(t) };
+};
+
+/* spirale (volute) : points d'une spirale logarithmique */
+function volute(cx: number, cy: number, r0: number, turns = 1.6, dir = 1) {
+  const pts: string[] = [];
+  const steps = 40;
+  for (let s = 0; s <= steps; s++) {
+    const t = (s / steps) * turns * Math.PI * 2;
+    const r = r0 * Math.pow(0.78, t);
+    pts.push(`${s === 0 ? 'M' : 'L'} ${(cx + dir * Math.cos(t) * r).toFixed(1)} ${(cy - Math.sin(t) * r).toFixed(1)}`);
+  }
+  return pts.join(' ');
+}
+
+/* pilastre corinthien ; `dx` décale le pilastre vers l'extérieur (pilastres doublés du portail) */
+function pilaster(side: 'L' | 'R', dx = 0) {
+  const m = side === 'L' ? 1 : -1;
+  const X = (x: number) => (side === 'L' ? x : 2 * VPX - x);
+  const inner = L - 10 - dx, outer = L - 72 - dx;
+  const capTop = IMPOST, capBot = IMPOST + 72;
+  const baseTop = FLOOR - 44;
+  const cx = X((outer + inner) / 2);
+  const parts: string[] = [];
+  parts.push(`<path class="draw" d="M ${X(outer)} ${capBot} V ${baseTop} M ${X(inner)} ${capBot} V ${baseTop}" />`);
+  parts.push(`<path class="draw flute" d="M ${X(outer + 16)} ${capBot + 14} V ${baseTop - 10} M ${X(outer + 31)} ${capBot + 14} V ${baseTop - 10} M ${X(outer + 46)} ${capBot + 14} V ${baseTop - 10}" />`);
+  parts.push(`<path class="draw gilt" d="M ${X(outer - 12)} ${capTop} H ${X(inner + 12)} V ${capTop + 12} H ${X(outer - 12)} Z" />`);
+  parts.push(`<path class="draw" d="M ${X(outer - 6)} ${capTop + 12} C ${X(outer - 6)} ${capTop + 30}, ${X(outer + 10)} ${capTop + 30}, ${X(outer + 14)} ${capTop + 44} M ${X(inner + 6)} ${capTop + 12} C ${X(inner + 6)} ${capTop + 30}, ${X(inner - 10)} ${capTop + 30}, ${X(inner - 14)} ${capTop + 44}" />`);
+  parts.push(`<path class="draw" d="${volute(X(outer + 2), capTop + 30, 13, 1.5, m)}" />`);
+  parts.push(`<path class="draw" d="${volute(X(inner - 2), capTop + 30, 13, 1.5, -m)}" />`);
+  parts.push(`<path class="draw" d="M ${cx} ${capBot} C ${cx - 18 * m} ${capBot - 10}, ${cx - 22 * m} ${capBot - 34}, ${cx - 6 * m} ${capBot - 40} C ${cx + 8 * m} ${capBot - 34}, ${cx + 10 * m} ${capBot - 12}, ${cx} ${capBot}" />`);
+  parts.push(`<path class="draw" d="M ${cx - 22 * m} ${capBot} C ${cx - 36 * m} ${capBot - 8}, ${cx - 40 * m} ${capBot - 26}, ${cx - 28 * m} ${capBot - 34} M ${cx + 22 * m} ${capBot} C ${cx + 36 * m} ${capBot - 8}, ${cx + 40 * m} ${capBot - 26}, ${cx + 28 * m} ${capBot - 34}" />`);
+  parts.push(`<path class="draw" d="M ${X(outer - 8)} ${baseTop} H ${X(inner + 8)} V ${baseTop + 12} H ${X(outer - 8)} Z" />`);
+  parts.push(`<path class="draw" d="M ${X(outer - 4)} ${baseTop + 12} C ${X(outer - 14)} ${baseTop + 18}, ${X(outer - 14)} ${baseTop + 26}, ${X(outer - 4)} ${baseTop + 30} M ${X(inner + 4)} ${baseTop + 12} C ${X(inner + 14)} ${baseTop + 18}, ${X(inner + 14)} ${baseTop + 26}, ${X(inner + 4)} ${baseTop + 30}" />`);
+  parts.push(`<path class="draw gilt" d="M ${X(outer - 16)} ${baseTop + 30} H ${X(inner + 16)} V ${FLOOR} H ${X(outer - 16)} Z" />`);
+  return parts.join('\n');
+}
+
+/* clef de voûte en console */
+const keystone = `M ${VPX - 36} ${TOP - 54} H ${VPX + 36} L ${VPX + 24} ${TOP + 26} H ${VPX - 24} Z`;
+const keystoneCurl = volute(VPX, TOP + 6, 11, 1.4, 1);
+
+/* corniche à denticules, frise de perles */
+const cornice = (ext = 96) => `M ${L - ext} ${CORN} H ${R + ext} M ${L - ext} ${CORN - 10} H ${R + ext} M ${L - ext} ${CORN - 34} H ${R + ext} M ${L - ext} ${CORN - 42} H ${R + ext}`;
+const dentils = (ext = 96) =>
+  Array.from({ length: 41 }, (_, j) => {
+    const x = L - ext + j * ((R - L + 2 * ext) / 40);
+    return `M ${x.toFixed(1)} ${CORN - 10} V ${CORN - 26}`;
+  }).join(' ');
+const pearls = Array.from({ length: 56 }, (_, j) => {
+  const x = L - 96 + 10 + j * ((R - L + 192 - 20) / 55);
+  return `M ${(x - 4).toFixed(1)} ${CORN + 10} a 4 4 0 1 0 8 0 a 4 4 0 1 0 -8 0`;
+}).join(' ');
+
+/* médaillons des écoinçons */
+const MX = 110, MY = TOP + 40;
+const medallion = (x: number) => `M ${x - 30} ${MY} a 30 30 0 1 0 60 0 a 30 30 0 1 0 -60 0 M ${x - 19} ${MY} a 19 19 0 1 0 38 0 a 19 19 0 1 0 -38 0`;
+const medallionLys = (x: number) =>
+  `M ${x} ${MY - 13} C ${x - 4} ${MY - 7}, ${x - 5} ${MY - 2}, ${x} ${MY + 3} C ${x + 5} ${MY - 2}, ${x + 4} ${MY - 7}, ${x} ${MY - 13} M ${x - 11} ${MY - 3} C ${x - 14} ${MY + 1}, ${x - 10} ${MY + 5}, ${x - 5} ${MY + 4} M ${x + 11} ${MY - 3} C ${x + 14} ${MY + 1}, ${x + 10} ${MY + 5}, ${x + 5} ${MY + 4} M ${x - 7} ${MY + 7} H ${x + 7} M ${x} ${MY + 7} V ${MY + 13}`;
+
+/* voûte à caissons : rosaces dans les caissons, anneau extérieur */
+const ROSETTE_ANGLES = [32, 58, 122, 148];
+const rosettes = ROSETTE_ANGLES.map((a) => {
+  const p = onArc(HALF + 24, a);
+  return `M ${(p.x - 9).toFixed(1)} ${p.y.toFixed(1)} a 9 9 0 1 0 18 0 a 9 9 0 1 0 -18 0 M ${(p.x - 3.5).toFixed(1)} ${p.y.toFixed(1)} a 3.5 3.5 0 1 0 7 0 a 3.5 3.5 0 1 0 -7 0`;
+}).join(' ');
+const VAULT_ANGLES = [18, 36, 54, 72, 108, 126, 144, 162];   // nervures longitudinales (lignes de fuite)
+const vaultRibs = VAULT_ANGLES.map((a) => onArc(HALF + 44, a));
+
+/* dallage : bordure de travée */
+const paving = `M ${L - 96} ${FLOOR} H ${R + 96} M ${L - 96} ${FLOOR - 12} H ${R + 96}`;
+const tileXs = Array.from({ length: 13 }, (_, j) => L - 96 + (j * (R - L + 192)) / 12);
+
+/* ── Portail monumental (dernière travée) ── */
+const PED_BASE = CORN - 42;
+const PX0 = L - 220, PX1 = R + 220, APEX = PED_BASE - 250;
+const pediment = `M ${PX0} ${PED_BASE} L ${VPX} ${APEX} L ${PX1} ${PED_BASE} Z`;
+const pedimentInner = `M ${PX0 + 54} ${PED_BASE - 18} L ${VPX} ${APEX + 38} L ${PX1 - 54} ${PED_BASE - 18}`;
+const CY = PED_BASE - 100;                 // centre du cartouche
+const cartouche = `M ${VPX - 74} ${CY} a 74 74 0 1 0 148 0 a 74 74 0 1 0 -148 0 M ${VPX - 60} ${CY} a 60 60 0 1 0 120 0 a 60 60 0 1 0 -120 0`;
+const markFronton = `M ${VPX - 46} ${CY + 30} L ${VPX} ${CY - 40} L ${VPX + 46} ${CY + 30} M ${VPX - 46} ${CY + 30} H ${VPX - 22} M ${VPX + 22} ${CY + 30} H ${VPX + 46}`;
+const markArch = `M ${VPX - 15} ${CY + 30} V ${CY + 2} A 15 15 0 0 1 ${VPX + 15} ${CY + 2} V ${CY + 30}`;
+const swag = (x0: number, x1: number, y: number) =>
+  `M ${x0} ${y} C ${x0 + (x1 - x0) * 0.25} ${y + 46}, ${x0 + (x1 - x0) * 0.75} ${y + 46}, ${x1} ${y}`;
+const rays = Array.from({ length: 13 }, (_, j) => {
+  const a = Math.PI + (j / 12) * Math.PI;           // de gauche à droite par le haut
+  const r = HALF * 0.98;
+  return `M ${VPX} ${VPY} L ${(VPX + r * Math.cos(a)).toFixed(1)} ${(IMPOST + r * Math.sin(a) * 1.0).toFixed(1)}`;
+}).join(' ');
+const ornamentAt = (x: number, y: number, size: number, rot = 0) =>
+  `translate(${x} ${y}) rotate(${rot}) scale(${size / 672}) translate(${-FLEUR_CENTER.x} ${FLEUR_CENTER.y}) scale(1 -1)`;
+
+const layers = Array.from({ length: N }, (_, i) => i);
+---
+
+<section class="hero hero--a" data-hero="a" aria-label="Cladéys — introduction">
+  <div class="hero__ground" aria-hidden="true"></div>
+  <div class="hero__sketch" aria-hidden="true"></div>
+
+  <svg
+    class="hero__gallery"
+    viewBox={`0 0 ${W} ${H}`}
+    preserveAspectRatio="xMidYMid slice"
+    aria-hidden="true"
+    data-gallery
+    data-vpx={VPX}
+    data-vpy={VPY}
+    data-k={K}
+    data-n={N}
+    data-floor={FLOOR}
+    data-tiles={tileXs.map((x) => x.toFixed(1)).join(',')}
+  >
+    <defs>
+      <radialGradient id="doorGlow" cx="50%" cy="62%" r="58%">
+        <stop offset="0%" stop-color="#fff6e0" stop-opacity="1" />
+        <stop offset="30%" stop-color="#e2c98b" stop-opacity="0.92" />
+        <stop offset="68%" stop-color="#ceab70" stop-opacity="0.5" />
+        <stop offset="100%" stop-color="#ceab70" stop-opacity="0" />
+      </radialGradient>
+      <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="18" />
+      </filter>
+    </defs>
+
+    <!-- Lignes de fuite : dallage, arêtes des murs, nervures de la voûte (invariantes quand la caméra avance) -->
+    <g class="fuite" stroke="#ceab70" fill="none" data-fuite>
+      {tileXs.map((x) => <line x1={x} y1={FLOOR} x2={VPX} y2={VPY} stroke-width="1" opacity="0.16" />)}
+      <line x1={L - 96} y1={FLOOR} x2={VPX} y2={VPY} stroke-width="1.4" opacity="0.5" />
+      <line x1={R + 96} y1={FLOOR} x2={VPX} y2={VPY} stroke-width="1.4" opacity="0.5" />
+      <line x1={L - 96} y1={CORN - 42} x2={VPX} y2={VPY} stroke-width="1.2" opacity="0.38" />
+      <line x1={R + 96} y1={CORN - 42} x2={VPX} y2={VPY} stroke-width="1.2" opacity="0.38" />
+      <line x1={L - 96} y1={CORN} x2={VPX} y2={VPY} stroke-width="1" opacity="0.22" />
+      <line x1={R + 96} y1={CORN} x2={VPX} y2={VPY} stroke-width="1" opacity="0.22" />
+      <line x1={VPX} y1={TOP - 54} x2={VPX} y2={VPY} stroke-width="1" opacity="0.26" />
+      {vaultRibs.map((p) => <line x1={p.x.toFixed(1)} y1={p.y.toFixed(1)} x2={VPX} y2={VPY} stroke-width="1" opacity="0.2" />)}
+    </g>
+
+    <!-- Parquet de Versailles : diagonales recalculées à chaque image (dépendent de deux travées) -->
+    <g class="parquet" stroke="#ceab70" fill="none" stroke-width="1" data-parquet>
+      {layers.slice(0, N - 1).map((i) => <path data-pair={i} d="" opacity="0.2" />)}
+    </g>
+
+    <!-- Travées, de la plus lointaine (portail) à la plus proche -->
+    {layers.slice().reverse().map((i) => (
+      <g class="layer" data-layer={i} transform={layerTransform(i)}>
+        {i === N - 1 ? (
+          <g class="door" fill="none" stroke="#ceab70" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- lumière -->
+            <path d={intrados} fill="url(#doorGlow)" stroke="none" filter="url(#softGlow)" opacity="0.9" />
+            <path d={intrados} fill="url(#doorGlow)" stroke="none" />
+            <path d={rays} stroke="#fff6e0" stroke-width="1" opacity="0.28" />
+            <path d={intrados} stroke="#fff6e0" stroke-width="3" />
+            <!-- archivolte à cinq rouleaux -->
+            <path class="draw" d={arc(HALF + 18)} stroke-width="1.4" />
+            <path class="draw" d={arc(HALF + 40)} stroke-width="2.4" />
+            <path class="draw" d={arc(HALF + 62)} stroke-width="1.2" />
+            <path class="draw" d={arc(HALF + 84)} stroke-width="2.2" />
+            <path class="draw gilt" d={keystone} stroke-width="2" />
+            <path class="draw" d={keystoneCurl} stroke-width="1.4" />
+            <!-- pilastres doublés -->
+            <Fragment set:html={pilaster('L', 0)} />
+            <Fragment set:html={pilaster('L', 96)} />
+            <Fragment set:html={pilaster('R', 0)} />
+            <Fragment set:html={pilaster('R', 96)} />
+            <!-- guirlandes entre les chapiteaux -->
+            <path class="draw" d={swag(L - 168 + 10, L - 10 - 10, IMPOST + 16)} stroke-width="1.4" />
+            <path class="draw" d={swag(R + 10 + 10, R + 168 - 10, IMPOST + 16)} stroke-width="1.4" />
+            <!-- entablement et fronton -->
+            <path class="draw" d={cornice(220)} stroke-width="1.8" />
+            <path class="draw" d={dentils(220)} stroke-width="1.2" opacity="0.8" />
+            <path class="draw gilt-soft" d={pediment} stroke-width="2.4" />
+            <path class="draw" d={pedimentInner} stroke-width="1.2" />
+            <!-- cartouche au pictogramme Cladéys -->
+            <path class="draw gilt-soft" d={cartouche} stroke-width="1.8" />
+            <path class="draw" d={markFronton} stroke="#eee7d2" stroke-width="3" />
+            <path class="draw" d={markArch} stroke-width="3" />
+            <!-- acrotères : fleurs de lys de la police d'ornements -->
+            <g class="acrotere" fill="#ceab70" stroke="none">
+              <path d={FLEUR_DE_LYS} transform={ornamentAt(VPX, APEX - 46, 92, 45)} />
+              <path d={FLEUR_DE_LYS} transform={ornamentAt(PX0 + 6, PED_BASE - 34, 62, 45)} />
+              <path d={FLEUR_DE_LYS} transform={ornamentAt(PX1 - 6, PED_BASE - 34, 62, 45)} />
+            </g>
+            <path class="draw" d={paving} stroke-width="1.4" opacity="0.9" />
+          </g>
+        ) : (
+          <g class="bay" fill="none" stroke="#ceab70" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- archivolte à trois rouleaux + anneau de voûte -->
+            <path class="draw" d={intrados} stroke-width="2.6" />
+            <path class="draw" d={arc(HALF + 18)} stroke-width="1.4" />
+            <path class="draw" d={arc(HALF + 40)} stroke-width="2.2" />
+            <path class="draw" d={arc(HALF + 48)} stroke-width="0.9" opacity="0.55" />
+            <path class="draw" d={rosettes} stroke-width="1.2" />
+            <!-- clef de voûte -->
+            <path class="draw gilt" d={keystone} stroke-width="2" />
+            <path class="draw" d={keystoneCurl} stroke-width="1.4" />
+            <!-- pilastres -->
+            <Fragment set:html={pilaster('L')} />
+            <Fragment set:html={pilaster('R')} />
+            <!-- corniche, denticules, frise de perles -->
+            <path class="draw" d={cornice()} stroke-width="1.6" />
+            <path class="draw" d={dentils()} stroke-width="1.2" opacity="0.8" />
+            <path class="draw" d={pearls} stroke-width="1" opacity="0.7" />
+            <!-- médaillons des écoinçons -->
+            <path class="draw gilt-soft" d={medallion(L + MX)} stroke-width="1.6" />
+            <path class="draw" d={medallionLys(L + MX)} stroke-width="1.3" />
+            <path class="draw gilt-soft" d={medallion(R - MX)} stroke-width="1.6" />
+            <path class="draw" d={medallionLys(R - MX)} stroke-width="1.3" />
+            <!-- dallage -->
+            <path class="draw" d={paving} stroke-width="1.4" opacity="0.9" />
+            {i >= 1 && i <= 8 && (
+              <g class="checkpoints" fill="#e2c98b" stroke="none" opacity="0">
+                <circle cx={L - 41} cy={IMPOST + 200} r="5" />
+                <circle cx={R + 41} cy={IMPOST + 200} r="5" />
+              </g>
+            )}
+          </g>
+        )}
+      </g>
+    ))}
+  </svg>
+
+  <div class="hero__veil" aria-hidden="true"></div>
+
+  <HeroText />
+
+  <div class="hero__flash" aria-hidden="true"></div>
+  <div class="hero__scrollhint" aria-hidden="true">
+    <span class="eyebrow">Défiler</span>
+    <span class="hero__scrollline"></span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    min-height: 640px;
+    overflow: hidden;
+    background: var(--navy-night);
+  }
+  .hero__ground {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 52%, rgba(38, 51, 87, 0.95) 0%, rgba(20, 31, 66, 0.9) 55%, rgba(14, 22, 46, 1) 100%);
+  }
+  /* motif à main levée : treillis tremblé et fleurs de lys croquées, très discret */
+  .hero__sketch {
+    position: absolute; inset: 0;
+    background: url('/brand/pattern-sketch.png?v=4') center / clamp(260px, 22vw, 360px) repeat;
+    opacity: 0.1;
+  }
+  .hero__gallery {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+  }
+  .hero__gallery .layer { will-change: transform, opacity; }
+  .hero__gallery .gilt { fill: rgba(206, 171, 112, 0.26); }
+  .hero__gallery .gilt-soft { fill: rgba(206, 171, 112, 0.12); }
+  .hero__gallery .flute { opacity: 0.45; stroke-width: 1; }
+  .hero__veil {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 48% 42% at 50% 46%, rgba(14, 22, 46, 0.74) 0%, rgba(14, 22, 46, 0.38) 55%, rgba(14, 22, 46, 0) 100%);
+    pointer-events: none;
+  }
+  .hero__flash {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 55%, #fff6e0 0%, #e2c98b 35%, rgba(226, 201, 139, 0) 72%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .hero__scrollhint {
+    position: absolute;
+    left: 50%; bottom: clamp(44px, 6vh, 72px);
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.7rem;
+    opacity: 0.85;
+  }
+  .hero__scrollhint .eyebrow { font-size: 0.7rem; letter-spacing: 0.4em; }
+  .hero__scrollline {
+    width: 1px; height: 54px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollpulse 2.2s ease-in-out infinite;
+  }
+  @keyframes scrollpulse {
+    0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
+    30% { opacity: 1; }
+    100% { transform: scaleY(1); transform-origin: top; opacity: 0; }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
+  gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin);
+
+  const hero = document.querySelector<HTMLElement>('[data-hero="a"]');
+  if (hero) {
+    const svg = hero.querySelector<SVGSVGElement>('[data-gallery]')!;
+    const VPX = Number(svg.dataset.vpx), VPY = Number(svg.dataset.vpy);
+    const K = Number(svg.dataset.k), N = Number(svg.dataset.n);
+    const FLOOR = Number(svg.dataset.floor);
+    const tiles = svg.dataset.tiles!.split(',').map(Number);
+    const layers = Array.from(svg.querySelectorAll<SVGGElement>('[data-layer]'));
+    const pairs = Array.from(svg.querySelectorAll<SVGPathElement>('[data-pair]'));
+    const z = (i: number) => Math.pow(1 / K, i);
+    const zDoor = z(N - 1);
+    const aMax = zDoor - 0.44;
+    const reduced = document.documentElement.classList.contains('motion-reduced');
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+
+    function render(p: number) {
+      const a = p * aMax;
+      const scales: number[] = [];
+      for (const g of layers) {
+        const i = Number(g.dataset.layer);
+        const zz = z(i) - a;
+        if (zz <= 0.1) { g.style.opacity = '0'; scales[i] = -1; continue; }
+        const s = 1 / zz;
+        scales[i] = s;
+        const fadeNear = s > 2.4 ? clamp(1 - (s - 2.4) / 1.6, 0, 1) : 1;
+        const fog = i === N - 1 ? 1 : clamp(1 - (zz - 1) / (zDoor * 0.9), 0.22, 1);
+        g.setAttribute('transform', `translate(${VPX} ${VPY}) scale(${s}) translate(${-VPX} ${-VPY})`);
+        g.style.opacity = String(fadeNear * fog);
+        const cp = g.querySelector<SVGGElement>('.checkpoints');
+        if (cp) cp.style.opacity = String(clamp(1 - Math.abs(zz - 1.15) / 0.5, 0, 1));
+      }
+      // parquet de Versailles : les deux diagonales de chaque dalle entre la travée i et la travée i+1
+      for (const path of pairs) {
+        const i = Number(path.dataset.pair);
+        const s0 = scales[i], s1 = scales[i + 1];
+        if (s0 < 0 || s1 < 0) { path.setAttribute('d', ''); continue; }
+        const y0 = VPY + (FLOOR - VPY) * s0, y1 = VPY + (FLOOR - VPY) * s1;
+        let d = '';
+        for (let j = 0; j < tiles.length - 1; j++) {
+          const xa0 = VPX + (tiles[j] - VPX) * s0, xb0 = VPX + (tiles[j + 1] - VPX) * s0;
+          const xa1 = VPX + (tiles[j] - VPX) * s1, xb1 = VPX + (tiles[j + 1] - VPX) * s1;
+          d += `M${xa0.toFixed(1)} ${y0.toFixed(1)}L${xb1.toFixed(1)} ${y1.toFixed(1)}M${xb0.toFixed(1)} ${y0.toFixed(1)}L${xa1.toFixed(1)} ${y1.toFixed(1)}`;
+        }
+        path.setAttribute('d', d);
+        const zz = z(i) - a;
+        const fog = clamp(1 - (zz - 1) / (zDoor * 0.9), 0.15, 1);
+        const fadeNear = s0 > 2.4 ? clamp(1 - (s0 - 2.4) / 1.6, 0, 1) : 1;
+        path.style.opacity = String(0.22 * fog * fadeNear);
+      }
+    }
+    render(0);
+
+    if (!reduced) {
+      const draws = layers
+        .slice()
+        .sort((a, b) => Number(b.dataset.layer) - Number(a.dataset.layer))
+        .map((g) => Array.from(g.querySelectorAll('.draw')));
+      const intro = gsap.timeline({ defaults: { ease: 'power2.out' } });
+      intro.from(svg.querySelector('[data-fuite]'), { opacity: 0, duration: 1.4 }, 0);
+      intro.from(svg.querySelector('[data-parquet]'), { opacity: 0, duration: 1.6 }, 0.4);
+      intro.from(svg.querySelector('.door'), { opacity: 0, scale: 0.6, transformOrigin: `${VPX}px ${VPY}px`, duration: 1.6 }, 0.1);
+      draws.forEach((paths, idx) => {
+        if (!paths.length) return;
+        intro.fromTo(paths, { drawSVG: '0%' }, { drawSVG: '100%', duration: 1.3, stagger: 0.008 }, 0.2 + idx * 0.08);
+      });
+      intro.from(hero.querySelectorAll('[data-hero-text] > *'), { y: 28, opacity: 0, duration: 0.9, stagger: 0.12 }, 0.7);
+      intro.from(hero.querySelector('.hero__scrollhint'), { opacity: 0, duration: 0.8 }, 1.8);
+
+      ScrollTrigger.create({
+        trigger: hero,
+        start: 'top top',
+        end: '+=240%',
+        pin: true,
+        scrub: 0.65,
+        onUpdate: (self) => {
+          render(self.progress);
+          const text = hero.querySelector<HTMLElement>('[data-hero-text]');
+          const t = clamp(self.progress / 0.32, 0, 1);
+          if (text) {
+            text.style.opacity = String(1 - t);
+            text.style.transform = `translate(-50%, calc(-52% - ${t * 60}px)) scale(${1 - t * 0.06})`;
+          }
+          const hint = hero.querySelector<HTMLElement>('.hero__scrollhint');
+          if (hint) hint.style.opacity = String(clamp(1 - self.progress / 0.08, 0, 1) * 0.85);
+          const flash = hero.querySelector<HTMLElement>('.hero__flash');
+          if (flash) flash.style.opacity = String(clamp((self.progress - 0.8) / 0.2, 0, 1) * 0.95);
+          const veil = hero.querySelector<HTMLElement>('.hero__veil');
+          if (veil) veil.style.opacity = String(1 - t);
+        },
+      });
+    }
+  }
+</script>

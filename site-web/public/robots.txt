@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://cladeis.fr/sitemap-index.xml

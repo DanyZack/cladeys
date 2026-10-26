@@ -1,0 +1,442 @@
+---
+/* Section 4 — La gamme : matrice 3 axes × 3 sujets = 9 offres clé en main.
+   Scène épinglée au scroll : les trois axes s'allument l'un après l'autre (Cladiag, Cladact,
+   Cladvision) avec leur définition à gauche ; à la fin, la matrice complète reste visible et
+   chaque case détaille sa promesse au survol. Fond navy profond, retour à la dominante. */
+
+const subjects = [
+  { key: 'secu', label: 'Sécurité M365', short: 'Sécu M365' },
+  { key: 'usage', label: 'Usages & licences', short: 'Usages' },
+  { key: 'ia', label: 'Intelligence artificielle', short: 'IA' },
+];
+
+const axes = [
+  {
+    key: 'cladiag',
+    name: 'Cladiag',
+    verb: 'Comprendre',
+    tone: 'bordeaux',
+    available: true,
+    definition: 'Une photographie nette de votre situation, mesurée contre des référentiels reconnus et traduite en priorités.',
+    cells: [
+      { promise: 'Votre posture Microsoft 365 mesurée contre le référentiel CISA, restituée en plan d’action priorisé.' },
+      { promise: 'Les licences que vous payez face aux usages réels : ce qui dort, ce qui manque, ce qui coûte.' },
+      { promise: 'Vos données sont-elles prêtes pour Copilot ? Exposition, droits d’accès, gouvernance.' },
+    ],
+  },
+  {
+    key: 'cladact',
+    name: 'Cladact',
+    verb: 'Agir',
+    tone: 'green',
+    available: true,
+    definition: 'Les actions prioritaires, appliquées avec vous, réversibles, et prouvées par une mesure avant et après.',
+    cells: [
+      { promise: 'Les dix remédiations prioritaires, appliquées, puis une nouvelle mesure pour prouver l’écart.' },
+      { promise: 'Guides et ateliers pour que les outils déjà payés soient réellement adoptés.' },
+      { promise: 'Une stratégie IA, des garde-fous, et un premier cas d’usage utile.' },
+    ],
+  },
+  {
+    key: 'cladvision',
+    name: 'Cladvision',
+    verb: 'Suivre',
+    tone: 'violet',
+    available: false,
+    definition: 'Un suivi dans le temps, pour que les acquis ne se perdent pas et que les dérives soient vues tôt.',
+    cells: [
+      { promise: 'Suivi continu de la posture de sécurité et de ses dérives.' },
+      { promise: 'Suivi de l’adoption et de l’évolution des licences.' },
+      { promise: 'Suivi de l’usage de l’IA et de l’exposition des données.' },
+    ],
+  },
+];
+---
+
+<section class="gamme" id="offres" data-gamme aria-labelledby="gamme-title">
+  <div class="gamme__sketch" aria-hidden="true"></div>
+
+  <div class="container gamme__head">
+    <p class="gamme__chapter" aria-hidden="true">
+      <span class="gamme__rule"></span>
+      <span class="gamme__numeral">IV</span>
+      <span class="gamme__rule"></span>
+    </p>
+    <p class="eyebrow">La gamme</p>
+    <h2 id="gamme-title" class="gamme__title">Trois axes, trois sujets.<br />Neuf offres clé en main.</h2>
+    <p class="lede gamme__lede">Rapides, cadrées, au forfait. Chacune répond à une question précise que se pose un dirigeant.</p>
+    <div class="gamme__scope">
+      <p class="gamme__scope-text">
+        Notre expertise se concentre sur l’écosystème <strong>Microsoft 365</strong>. C’est là que vivent vos utilisateurs :
+        leurs identités, leur messagerie, leurs outils de collaboration, leurs documents et, souvent, leurs appareils.
+        Le cœur du travail quotidien de toute l’entreprise, et de loin son périmètre le plus exposé.
+      </p>
+      <ul class="gamme__icons" aria-label="Services Microsoft 365 couverts">
+        {[
+          ['defender', 'Defender'], ['intune', 'Intune'], ['copilot', 'Copilot'], ['purview', 'Purview'],
+          ['entra', 'Entra ID'], ['exchange', 'Exchange'], ['teams', 'Teams'], ['sharepoint', 'SharePoint'], ['onedrive', 'OneDrive'],
+        ].map(([k, label]) => (
+          <li><img src={`/brand/ms/ms-${k}.png`} alt="" width="40" height="40" loading="lazy" /><span>{label}</span></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="gamme__stage" data-stage>
+    <div class="container gamme__stage-inner">
+      <!-- définitions des axes (une seule visible à la fois pendant l'épinglage) -->
+      <div class="gamme__steps" data-steps>
+        {axes.map((a, i) => (
+          <div class={`step step--${a.tone}`} data-step={i}>
+            <p class="step__verb">{a.verb}</p>
+            <h3 class="step__name">{a.name}</h3>
+            <p class="step__def">{a.definition}</p>
+            <p class={`step__status ${a.available ? '' : 'step__status--soon'}`}>
+              {a.available ? 'Trois offres disponibles' : 'Bientôt disponible'}
+            </p>
+          </div>
+        ))}
+        <p class="gamme__hint" data-hint>Survolez une offre pour lire sa promesse.</p>
+      </div>
+
+      <!-- la matrice -->
+      <div class="matrix" data-matrix role="table" aria-label="Les neuf offres Cladéys">
+        <div class="matrix__corner" role="presentation"></div>
+        {subjects.map((s) => (
+          <div class="matrix__col" role="columnheader">
+            <span class="matrix__col-label">{s.label}</span>
+          </div>
+        ))}
+        {axes.map((a, i) => (
+          <Fragment>
+            <div class={`matrix__row-head matrix__row-head--${a.tone}`} role="rowheader" data-row={i} style={`--i:${i * 4}`}>
+              <span class="matrix__row-verb">{a.verb}</span>
+              <span class="matrix__row-name">{a.name}</span>
+            </div>
+            {a.cells.map((c, j) => (
+              <article class={`cell cell--${a.tone} ${a.available ? '' : 'cell--soon'}`} data-row={i} data-col={j} tabindex="0" role="cell" data-tilt="3" style={`--i:${i * 4 + j + 1}`}>
+                <span class="cell__subject">{subjects[j].short}</span>
+                <span class="cell__name">{a.name} <em>{subjects[j].label}</em></span>
+                <p class="cell__promise">{c.promise}</p>
+                <span class="cell__badge">{a.available ? 'Disponible' : 'Bientôt'}</span>
+              </article>
+            ))}
+          </Fragment>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="container gamme__custom" data-custom>
+    <span class="gamme__custom-rule"></span>
+    <p class="gamme__custom-text">
+      <strong>Et au-delà des neuf offres.</strong> Pour un projet qui ne rentre dans aucune case, nous construisons avec vous un accompagnement sur mesure, cadré et chiffré de la même façon. Notre valeur ajoutée reste la vitesse d’exécution de ces neuf offres : c’est là que nous sommes les meilleurs.
+    </p>
+  </div>
+</section>
+
+<style>
+  .gamme {
+    position: relative;
+    padding: clamp(6rem, 14vh, 11rem) 0 clamp(6rem, 14vh, 10rem);
+    background: var(--navy-night);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .gamme__sketch {
+    position: absolute; inset: 0;
+    background: url('/brand/pattern-sketch.png?v=4') center / clamp(260px, 22vw, 360px) repeat;
+    opacity: 0.045;
+    z-index: -1;
+  }
+  .gamme__head { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.2rem; max-width: 960px; margin-bottom: clamp(2rem, 6vh, 4rem); }
+  .gamme__chapter { display: inline-flex; align-items: center; gap: 1.2rem; margin: 0 0 0.4rem; color: var(--gold); }
+  .gamme__rule { width: clamp(40px, 8vw, 110px); height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+  .gamme__chapter .gamme__rule:last-child { background: linear-gradient(90deg, var(--gold), transparent); }
+  .gamme__numeral { font-family: var(--font-inscription); font-size: clamp(1.4rem, 2.2vw, 2rem); font-weight: 600; letter-spacing: 0.2em; padding-left: 0.2em; }
+  .gamme__title { line-height: 1.1; }
+  .gamme__lede { color: var(--ivory-70); max-width: 52ch; }
+  .gamme__scope {
+    display: flex; flex-direction: column; align-items: center; gap: 1.4rem;
+    margin-top: 1.2rem; padding-top: 1.8rem;
+    border-top: 1px solid var(--gold-hairline);
+    max-width: 780px;
+  }
+  .gamme__scope-text { font-size: var(--fs-body); line-height: 1.55; color: var(--ivory); }
+  .gamme__scope-text strong { color: var(--gold-light); font-weight: 600; }
+  .gamme__icons {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(0.8rem, 2vw, 1.6rem);
+  }
+  .gamme__icons li { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+  .gamme__icons img {
+    width: clamp(30px, 3vw, 40px); height: clamp(30px, 3vw, 40px);
+    object-fit: contain;
+    padding: 7px;
+    background: var(--ivory);
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    box-sizing: content-box;
+  }
+  .gamme__icons span { font-family: var(--font-inscription); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ivory-70); }
+
+  /* ── scène épinglée ── */
+  .gamme__stage { position: relative; }
+  .gamme__stage-inner {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.6fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 2rem 0;
+  }
+
+  .gamme__steps { position: relative; min-height: 320px; }
+  .step {
+    --tone: var(--bordeaux);
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center; gap: 0.8rem;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .step--bordeaux { --tone: var(--bordeaux); }
+  .step--green { --tone: var(--green); }
+  .step--violet { --tone: var(--royal-violet); }
+  .step__verb {
+    font-family: var(--font-inscription);
+    font-size: 0.85rem; font-weight: 600; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .step__name {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 1.6rem + 3vw, 4.4rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ivory);
+  }
+  .step__name::after {
+    content: '';
+    display: block;
+    width: 72px; height: 3px;
+    margin-top: 0.9rem;
+    background: color-mix(in srgb, var(--tone) 70%, var(--gold) 30%);
+  }
+  .step__def { font-size: var(--fs-lede); line-height: 1.45; color: var(--ivory); max-width: 34ch; }
+  .step__status {
+    font-family: var(--font-inscription);
+    font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--green);
+    color: color-mix(in srgb, var(--green) 55%, var(--ivory) 45%);
+  }
+  .step__status--soon { color: var(--gold-light); }
+  .gamme__hint {
+    position: absolute; left: 0; bottom: 0;
+    font-family: var(--font-inscription);
+    font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ivory-50);
+    opacity: 0;
+  }
+
+  /* ── matrice ── */
+  .matrix {
+    display: grid;
+    grid-template-columns: minmax(96px, 0.55fr) repeat(3, minmax(0, 1fr));
+    grid-auto-rows: auto;
+    gap: 10px;
+  }
+  .matrix__corner { }
+  .matrix__col {
+    display: flex; align-items: flex-end; justify-content: center;
+    padding: 0 0.4rem 0.6rem;
+    text-align: center;
+  }
+  .matrix__col-label {
+    font-family: var(--font-inscription);
+    font-size: clamp(0.68rem, 0.6rem + 0.3vw, 0.85rem);
+    font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold);
+    border-bottom: 1px solid var(--gold-hairline);
+    padding-bottom: 0.5rem;
+  }
+  .matrix__row-head {
+    --tone: var(--bordeaux);
+    display: flex; flex-direction: column; justify-content: center; gap: 0.2rem;
+    padding: 0.6rem 0.6rem 0.6rem 0;
+    border-right: 2px solid var(--tone);
+    transition: opacity 0.4s ease;
+  }
+  .matrix__row-head--bordeaux { --tone: var(--bordeaux); }
+  .matrix__row-head--green { --tone: var(--green); }
+  .matrix__row-head--violet { --tone: var(--royal-violet); }
+  .matrix__row-verb { font-family: var(--font-inscription); font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+  .matrix__row-name { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.05rem, 0.9rem + 0.6vw, 1.5rem); color: var(--ivory); line-height: 1.05; }
+
+  .cell {
+    --tone: var(--bordeaux);
+    position: relative;
+    display: flex; flex-direction: column; gap: 0.35rem;
+    min-height: clamp(120px, 15vh, 170px);
+    padding: clamp(0.8rem, 1.4vw, 1.2rem);
+    border: 1px solid var(--gold-hairline);
+    background: rgba(238, 231, 210, 0.035);
+    color: var(--ivory);
+    transition: border-color 0.35s ease, background-color 0.35s ease, transform 0.35s ease, opacity 0.4s ease, box-shadow 0.35s ease;
+    cursor: default;
+    outline-offset: 3px;
+  }
+  .cell--bordeaux { --tone: var(--bordeaux); }
+  .cell--green { --tone: var(--green); }
+  .cell--violet { --tone: var(--royal-violet); }
+  .cell::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--tone);
+    opacity: 0.85;
+  }
+  .cell__subject { font-family: var(--font-inscription); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+  .cell__name { font-family: var(--font-display); font-weight: 650; font-size: clamp(0.98rem, 0.85rem + 0.5vw, 1.3rem); line-height: 1.15; }
+  .cell__name em { font-style: italic; font-weight: 500; color: var(--gold-light); }
+  .cell__promise {
+    font-size: 0.95rem; line-height: 1.42; color: var(--ivory-70);
+    max-height: 0; overflow: hidden; opacity: 0;
+    transition: max-height 0.45s ease, opacity 0.35s ease, margin 0.35s ease;
+  }
+  .cell__badge {
+    margin-top: auto;
+    align-self: flex-start;
+    font-family: var(--font-inscription);
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ivory-70);
+    border: 1px solid var(--gold-hairline);
+    padding: 0.25rem 0.5rem;
+  }
+  .cell--soon .cell__badge { color: var(--gold-light); border-color: var(--gold); }
+  .cell--soon { background: repeating-linear-gradient(135deg, rgba(238, 231, 210, 0.035) 0 10px, rgba(238, 231, 210, 0.015) 10px 20px); }
+
+  /* révélation (déterministe, en CSS) : chaque élément arrive avec un léger décalage */
+  .cell, .matrix__row-head { transition-delay: 0s; }
+  .matrix:not(.is-revealed) .cell,
+  .matrix:not(.is-revealed) .matrix__row-head,
+  .matrix:not(.is-revealed) .matrix__col { opacity: 0 !important; --ty: 16px; transform: translateY(16px); }
+  .matrix.is-revealed .cell, .matrix.is-revealed .matrix__row-head { transition-delay: calc(var(--i, 0) * 45ms); }
+  .matrix.is-revealed .cell:hover, .matrix.is-revealed .cell:focus-visible { transition-delay: 0s; }
+  .matrix__col { transition: opacity 0.5s ease, transform 0.5s ease; }
+  .matrix__row-head { transition: opacity 0.5s ease, transform 0.5s ease; }
+
+  /* état « allumé » pendant l'épinglage, et survol une fois la matrice révélée */
+  .matrix.is-telling .cell:not(.is-lit),
+  .matrix.is-telling .matrix__row-head:not(.is-lit) { opacity: 0.22; }
+  .cell.is-lit { border-color: var(--gold); background: rgba(206, 171, 112, 0.1); }
+  .matrix:not(.is-telling) .cell:hover,
+  .matrix:not(.is-telling) .cell:focus-visible {
+    border-color: var(--gold);
+    background: rgba(206, 171, 112, 0.12);
+    --ty: -3px;
+    box-shadow: 0 18px 40px rgba(14, 22, 46, 0.55);
+    z-index: 2;
+  }
+  .matrix:not(.is-telling) .cell:hover .cell__promise,
+  .matrix:not(.is-telling) .cell:focus-visible .cell__promise,
+  .matrix.is-open .cell.is-open .cell__promise { max-height: 9em; opacity: 1; margin-top: 0.2rem; }
+
+  /* ── sur mesure ── */
+  .gamme__custom { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.6rem; margin-top: clamp(3rem, 8vh, 6rem); max-width: 860px; }
+  .gamme__custom-rule { width: 72px; height: 1px; background: var(--gold); }
+  .gamme__custom-text { font-size: var(--fs-lede); line-height: 1.5; color: var(--ivory-70); }
+  .gamme__custom-text strong { color: var(--ivory); font-weight: 600; }
+
+  @media (max-width: 980px) {
+    .gamme__stage-inner { grid-template-columns: 1fr; min-height: 0; gap: 2rem; }
+    .gamme__steps { display: none; }
+    .matrix { grid-template-columns: 1fr; gap: 1.6rem 0; }
+    .matrix__corner, .matrix__col { display: none; }
+    .matrix__row-head { border-right: 0; border-bottom: 1px solid var(--gold-hairline); padding: 0 0 0.5rem; margin-top: 0.4rem; }
+    .cell { min-height: 0; margin-bottom: 8px; }
+    .cell__promise { max-height: none; opacity: 1; margin-top: 0.2rem; }
+    .matrix.is-telling .cell:not(.is-lit), .matrix.is-telling .matrix__row-head:not(.is-lit) { opacity: 1; }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  const section = document.querySelector<HTMLElement>('[data-gamme]');
+  if (section) {
+    const stage = section.querySelector<HTMLElement>('[data-stage]')!;
+    const matrix = section.querySelector<HTMLElement>('[data-matrix]')!;
+    const steps = Array.from(section.querySelectorAll<HTMLElement>('[data-step]'));
+    const hint = section.querySelector<HTMLElement>('[data-hint]')!;
+    const rows = 3;
+
+    const lightRow = (r: number) => {
+      matrix.querySelectorAll<HTMLElement>('[data-row]').forEach((el) => {
+        el.classList.toggle('is-lit', Number(el.dataset.row) === r);
+      });
+    };
+    const lightAll = () => matrix.querySelectorAll<HTMLElement>('[data-row]').forEach((el) => el.classList.add('is-lit'));
+
+    gsap.from(section.querySelectorAll('.gamme__head > *'), {
+      y: 30, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power2.out',
+      scrollTrigger: { trigger: section, start: 'top 72%' },
+    });
+
+    // Responsive + mouvement réduit gérés par gsap.matchMedia : tout est annulé proprement au changement.
+    const mm = gsap.matchMedia();
+
+    mm.add('(min-width: 981px) and (prefers-reduced-motion: no-preference)', () => {
+      matrix.classList.add('is-telling');
+      let current = -1;
+      const showStep = (i: number) => {
+        if (i === current) return;
+        current = i;
+        steps.forEach((s, k) => {
+          gsap.to(s, { opacity: k === i ? 1 : 0, y: k === i ? 0 : k < i ? -14 : 14, duration: 0.45, ease: 'power2.out', overwrite: true });
+        });
+        if (i >= 0 && i < rows) { lightRow(i); matrix.classList.add('is-telling'); gsap.to(hint, { opacity: 0, duration: 0.3 }); }
+        if (i === rows) { lightAll(); matrix.classList.remove('is-telling'); gsap.to(hint, { opacity: 1, duration: 0.6, delay: 0.3 }); }
+      };
+      gsap.set(steps, { opacity: 0, y: 14 });
+      const playReveal = () => matrix.classList.add('is-revealed');
+      ScrollTrigger.create({ trigger: stage, start: 'top 75%', once: true, onEnter: playReveal });
+      ScrollTrigger.create({
+        trigger: stage,
+        start: 'top top',
+        end: '+=130%',
+        pin: true,
+        scrub: 0.5,
+        onUpdate: (self) => {
+          playReveal();
+          const p = self.progress;
+          showStep(p < 0.3 ? 0 : p < 0.58 ? 1 : p < 0.86 ? 2 : 3);
+        },
+        onEnter: () => { playReveal(); showStep(0); },
+        onLeave: () => showStep(rows),
+        onEnterBack: () => showStep(2),
+      });
+      return () => {
+        matrix.classList.remove('is-telling');
+        matrix.querySelectorAll('.is-lit').forEach((el) => el.classList.remove('is-lit'));
+      };
+    });
+
+    mm.add('(max-width: 980px), (prefers-reduced-motion: reduce)', () => {
+      matrix.classList.remove('is-telling');
+      matrix.classList.add('is-revealed');
+      lightAll();
+      gsap.set(steps, { opacity: 0 });
+      gsap.set(hint, { opacity: 0 });
+    });
+
+    // au clavier / tactile : ouvrir une case
+    matrix.querySelectorAll<HTMLElement>('.cell').forEach((cell) => {
+      cell.addEventListener('click', () => {
+        const open = cell.classList.toggle('is-open');
+        matrix.classList.toggle('is-open', open || !!matrix.querySelector('.cell.is-open'));
+      });
+    });
+  }
+</script>

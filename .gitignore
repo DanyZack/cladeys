@@ -1,0 +1,9 @@
+# dépôt Cladéys : le site vit dans site-web/, les autres dossiers sont des projets séparés
+site-web/node_modules/
+site-web/dist/
+site-web/.astro/
+site-web/.netlify/
+output/
+**/output/
+.DS_Store
+Thumbs.db

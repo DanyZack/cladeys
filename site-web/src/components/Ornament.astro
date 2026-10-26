@@ -1,0 +1,18 @@
+---
+/* Un ornement de coin vectoriel (police d'ornements des documents Cladéys), orienté par `corner`. */
+import { ORNAMENTS, type OrnamentName } from '../assets/ornaments';
+interface Props {
+  name?: OrnamentName;
+  corner?: 'tl' | 'tr' | 'br' | 'bl';
+  class?: string;
+}
+const { name = 'scrollCorner', corner = 'tl', class: cls = '' } = Astro.props;
+const rot = { tl: 0, tr: 90, br: 180, bl: 270 }[corner];
+---
+<svg class={cls} viewBox="0 0 1000 1000" aria-hidden="true" focusable="false">
+  <g transform={`rotate(${rot} 500 500)`}>
+    <g transform="translate(0 800) scale(1 -1)">
+      <path d={ORNAMENTS[name]} fill="currentColor" />
+    </g>
+  </g>
+</svg>

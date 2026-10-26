@@ -1,0 +1,68 @@
+---
+const BOOKING = 'https://bookings.cloud.microsoft/book/RendezvousdinformationCladys@cladeys.fr/?ismsaljsauthenabled';
+---
+<div class="hero-text" data-hero-text>
+  <p class="eyebrow eyebrow--rule">Conseil en sécurité Microsoft 365</p>
+  <h1 class="hero-text__title">
+    <span>Voir clair,</span>
+    <span>agir juste,</span>
+    <span><em>viser loin.</em></span>
+  </h1>
+  <p class="hero-text__lede">
+    Une expertise de niveau grand compte, cadrée, lisible et au forfait,
+    pour sécuriser vos identités, vos postes, votre messagerie et vos données.
+  </p>
+  <div class="hero-text__actions">
+    <a class="btn btn--solid" href={BOOKING} target="_blank" rel="noopener">Prendre rendez-vous</a>
+    <a class="btn btn--ghost" href="#offres">Découvrir les offres</a>
+  </div>
+</div>
+
+<style>
+  .hero-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -52%);
+    width: min(100% - 2 * var(--gutter), 980px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.4rem;
+    z-index: 3;
+    will-change: transform, opacity;
+  }
+  .hero-text__title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.02;
+    text-shadow: 0 2px 30px rgba(14, 22, 46, 0.75);
+  }
+  .hero-text__title span { display: block; }
+  .hero-text__title em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--gold-light);
+  }
+  .hero-text__lede {
+    max-width: 44ch;
+    font-size: var(--fs-lede);
+    font-weight: 420;
+    line-height: 1.45;
+    color: var(--ivory);
+    text-shadow: 0 1px 18px rgba(14, 22, 46, 0.8);
+  }
+  .hero-text__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.6rem;
+  }
+  @media (max-width: 560px) {
+    .hero-text { gap: 1.1rem; transform: translate(-50%, -50%); }
+    .hero-text__actions .btn { width: 100%; }
+  }
+</style>

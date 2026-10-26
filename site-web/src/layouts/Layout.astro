@@ -1,0 +1,123 @@
+---
+import '../styles/global.css';
+import Frame from '../components/Frame.astro';
+import Nav from '../components/Nav.astro';
+import Cursor from '../components/Cursor.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+const {
+  title = 'Cladéys — Voir clair, agir juste, viser loin.',
+  description = 'Cladéys : conseil en sécurité Microsoft 365 au forfait, pour les PME et ETI. Comprendre, agir, suivre, sur la sécurité, les usages et l’IA. Bordeaux et toute la France.',
+  noindex = false,
+} = Astro.props;
+const site = Astro.site ?? new URL('https://cladeis.fr');
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL('/brand/og-cladeys.jpg', site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Cladéys',
+  url: site.href,
+  logo: new URL('/brand/logo-mark.svg', site).href,
+  image: ogImage,
+  description,
+  email: 'dpolonio@cladeys.fr',
+  areaServed: ['Bordeaux', 'Nouvelle-Aquitaine', 'France'],
+  knowsAbout: ['Microsoft 365', 'Microsoft Entra', 'Microsoft Intune', 'Microsoft Defender', 'Microsoft Purview', 'Copilot', 'cybersécurité'],
+  slogan: 'Voir clair, agir juste, viser loin.',
+  sameAs: ['https://tuneincloud.fr/'],
+};
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#141f42" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preload" as="image" href="/brand/hero-gallery.webp" fetchpriority="high" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Cladéys" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Cladéys — Voir clair, agir juste, viser loin." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <Frame />
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Cursor />
+    <script>
+      import Lenis from 'lenis';
+      import { gsap } from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!reduced) {
+        const lenis = new Lenis({
+          lerp: 0.09,
+          wheelMultiplier: 0.9,
+          smoothWheel: true,
+        });
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => lenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(0);
+        (window as any).__lenis = lenis;
+
+        // ancres internes
+        document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+          a.addEventListener('click', (e) => {
+            const id = a.getAttribute('href');
+            if (!id || id === '#') return;
+            const el = document.querySelector(id);
+            if (!el) return;
+            e.preventDefault();
+            lenis.scrollTo(el as HTMLElement, { offset: 0 });
+          });
+        });
+      }
+      document.documentElement.classList.add(reduced ? 'motion-reduced' : 'motion-ok');
+
+      // La barre de navigation (fixe) passe en encre navy quand elle survole une section claire.
+      const nav = document.querySelector<HTMLElement>('[data-nav]');
+      if (nav) {
+        document.querySelectorAll<HTMLElement>('[data-theme="light"]').forEach((sec) => {
+          ScrollTrigger.create({
+            trigger: sec,
+            start: 'top 64px',
+            end: 'bottom 64px',
+            onToggle: (self) => nav.classList.toggle('nav--on-light', self.isActive),
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

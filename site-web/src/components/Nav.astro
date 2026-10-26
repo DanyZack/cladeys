@@ -1,0 +1,97 @@
+---
+import LogoMark from './LogoMark.astro';
+const BOOKING = 'https://bookings.cloud.microsoft/book/RendezvousdinformationCladys@cladeys.fr/?ismsaljsauthenabled';
+const links = [
+  { href: '#offres', label: 'Offres' },
+  { href: '#methode', label: 'Méthode' },
+  { href: '#contact', label: 'Contact' },
+];
+---
+<header class="nav" data-nav>
+  <a class="nav__brand" href="/" aria-label="Cladéys — accueil">
+    <LogoMark class="nav__mark" />
+    <span class="nav__word">Cla<span>d</span>éys</span>
+  </a>
+  <nav class="nav__links" aria-label="Navigation principale">
+    {links.map((l) => <a href={l.href}>{l.label}</a>)}
+  </nav>
+  <a class="btn btn--ghost nav__cta" href={BOOKING} target="_blank" rel="noopener">Prendre rendez-vous</a>
+</header>
+
+<style is:global>
+  .nav__mark { width: 54px; height: auto; color: var(--ivory); transition: color 0.35s ease; }
+  .nav--on-light .nav__mark { color: var(--navy-deep); }
+</style>
+
+<style>
+  .nav {
+    position: fixed;
+    top: calc(var(--frame-inset-2) + 10px);
+    left: calc(var(--frame-inset-2) + 18px);
+    right: calc(var(--frame-inset-2) + 18px);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    pointer-events: none;
+  }
+  .nav > * { pointer-events: auto; }
+
+  .nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: var(--ivory);
+    transition: color 0.35s ease;
+  }
+  .nav--on-light .nav__brand { color: var(--navy-deep); }
+  .nav--on-light .nav__links a { color: rgba(28, 43, 94, 0.72); }
+  .nav--on-light .nav__links a:hover { color: var(--navy-deep); }
+  .nav--on-light .nav__cta { --btn-fg: var(--navy-deep); --btn-border: var(--navy-deep); }
+  .nav--on-light .nav__cta:hover { --btn-bg: var(--navy-deep); --btn-fg: var(--ivory); }
+  .nav__word {
+    font-family: var(--font-inscription);
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding-left: 0.3em;
+  }
+  .nav__word span { color: var(--gold); }
+
+  .nav__links { display: flex; gap: 2.4rem; }
+  .nav__links a {
+    font-family: var(--font-inscription);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ivory-70);
+    text-decoration: none;
+    position: relative;
+    padding: 0.4rem 0;
+    transition: color 0.3s ease;
+  }
+  .nav__links a::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+  .nav__links a:hover { color: var(--gold-light); }
+  .nav__links a:hover::after { transform: scaleX(1); }
+
+  .nav__cta { min-height: 2.75rem; padding: 0.55rem 1.3rem; font-size: 0.75rem; }
+
+  @media (max-width: 960px) { .nav__links { display: none; } }
+  @media (max-width: 560px) {
+    .nav__word { display: none; }
+    .nav__cta { font-size: 0.68rem; letter-spacing: 0.16em; padding: 0.5rem 0.9rem; }
+  }
+</style>

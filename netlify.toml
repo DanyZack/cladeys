@@ -1,0 +1,28 @@
+# Cladéys — déploiement Netlify
+# Le site Astro vit dans site-web/ ; le reste du dépôt est constitué de projets frères.
+[build]
+  base    = "site-web"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# en-têtes de sécurité et de cache
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/brand/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

@@ -1,0 +1,8 @@
+---
+/* Pictogramme Cladéys inliné (fronton en currentColor, arche or). */
+import raw from '../../brand/logo-mark.svg?raw';
+interface Props { class?: string }
+const { class: cls = '' } = Astro.props;
+const svg = raw.replace('<svg ', `<svg class="${cls}" `);
+---
+<Fragment set:html={svg} />

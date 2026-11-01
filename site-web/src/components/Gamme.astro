@@ -308,11 +308,12 @@ const axes = [
     align-self: flex-start;
     font-family: var(--font-inscription);
     font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--ivory-70);
-    border: 1px solid var(--gold-hairline);
+    color: #ffffff;
+    background: var(--green);
+    border: 1px solid var(--green);
     padding: 0.25rem 0.5rem;
   }
-  .cell--soon .cell__badge { color: var(--gold-light); border-color: var(--gold); }
+  .cell--soon .cell__badge { color: var(--gold-light); background: transparent; border-color: var(--gold); }
   .cell--soon { background: repeating-linear-gradient(135deg, rgba(238, 231, 210, 0.035) 0 10px, rgba(238, 231, 210, 0.015) 10px 20px); }
 
   /* révélation (déterministe, en CSS) : chaque élément arrive avec un léger décalage */
